@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climatología Colombia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #060d1a;
+            --bg2: #0a1628;
+            --bg3: #0f1f38;
+            --surface: #112040;
+            --surface2: #162a50;
+            --border: rgba(96, 165, 250, 0.12);
+            --accent: #38bdf8;
+            --accent2: #0ea5e9;
+            --accent3: #7dd3fc;
+            --teal: #2dd4bf;
+            --gold: #f59e0b;
+            --text: #e2eaf5;
+            --text2: #94afc8;
+            --text3: #5a7a9a;
+            --sidebar-w: 270px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── BACKGROUND DECORATION ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px; right: -200px;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -200px; left: 100px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: linear-gradient(180deg, #0a1628 0%, #060d1a 100%);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            padding: 28px 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--teal));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+        }
+        .logo-text span {
+            display: block;
+            font-weight: 400;
+            color: var(--text3);
+            font-size: 11px;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text3);
+            font-weight: 500;
+            margin: 20px 8px 10px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 11px 14px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text2);
+            font-size: 13.5px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            border: 1px solid transparent;
+        }
+
+        .nav-btn .nav-icon {
+            font-size: 15px;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:hover {
+            background: var(--surface);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .nav-btn.active {
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent);
+            border-color: rgba(56, 189, 248, 0.2);
+            font-weight: 500;
+        }
+
+        .nav-btn.active .nav-icon { color: var(--accent); }
+
+        .sidebar-footer {
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-footer p {
+            font-size: 11px;
+            color: var(--text3);
+            line-height: 2;
+            font-weight: 300;
+        }
+
+        .sidebar-footer .footer-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text3);
+            margin-bottom: 6px;
+        }
+
+        /* ─── MAIN CONTENT ─── */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-width: 0;
+            overflow-x: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Top bar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            background: rgba(6, 13, 26, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 40px;
+            z-index: 50;
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        .topbar-sub {
+            font-size: 12px;
+            color: var(--text3);
+            margin-bottom: 1px;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(56,189,248,0.12);
+            color: var(--accent);
+            border: 1px solid rgba(56,189,248,0.25);
+            border-radius: 20px;
+            padding: 3px 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .page-content {
+            padding: 36px 40px 60px;
+        }
+
+        /* ─── SECTIONS ─── */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeUp 0.35s ease; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── CARDS ─── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-icon {
+            width: 36px; height: 36px;
+            border-radius: 9px;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* ─── HERO SECTION ─── */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--teal));
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        .stat-desc {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+
+        /* ─── INTRO CARD ─── */
+        .intro-text {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: var(--text2);
+        }
+
+        .intro-text strong { color: var(--accent3); font-weight: 500; }
+
+        /* ─── SECTION CARD ─── */
+        .section-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 4px;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 14px;
+        }
+
+        .body-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text2);
+        }
+
+        /* ─── BULLET LISTS ─── */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .bullet-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        .bullet-list li::before {
+            content: '▸';
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 11px;
+        }
+
+        /* ─── OBJECTIVES ─── */
+        .obj-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .obj-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .obj-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: rgba(56,189,248,0.2);
+            line-height: 1;
+            flex-shrink: 0;
+            min-width: 28px;
+        }
+
+        .obj-text {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        /* ─── TECH TABLE ─── */
+        .tech-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13.5px;
+            margin-top: 14px;
+        }
+
+        .tech-table th {
+            text-align: left;
+            padding: 10px 16px;
+            background: var(--bg3);
+            color: var(--text3);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tech-table th:first-child { border-radius: 8px 0 0 0; }
+        .tech-table th:last-child  { border-radius: 0 8px 0 0; }
+
+        .tech-table td {
+            padding: 12px 16px;
+            color: var(--text2);
+            border-bottom: 1px solid rgba(96,165,250,0.06);
+        }
+
+        .tech-table tr:hover td { background: rgba(56,189,248,0.03); }
+
+        .tech-name {
+            color: var(--accent3);
+            font-weight: 500;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(45,212,191,0.1);
+            color: var(--teal);
+            border: 1px solid rgba(45,212,191,0.2);
+        }
+
+        /* ─── PHASES TIMELINE ─── */
+        .phases-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 14px;
+        }
+
+        .phase-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .phase-item:not(:last-child) {
+            padding-bottom: 24px;
+        }
+
+        .phase-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .phase-dot {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(56,189,248,0.1);
+            border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .phase-line {
+            width: 2px;
+            flex: 1;
+            background: var(--border);
+            margin-top: 4px;
+        }
+
+        .phase-item:last-child .phase-line { display: none; }
+
+        .phase-body { flex: 1; padding-top: 4px; }
+
+        .phase-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        /* ─── DATASET INFO ─── */
+        .dataset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .ds-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .ds-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text3);
+            margin-bottom: 6px;
+        }
+
+        .ds-value {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* ─── PERIODS ─── */
+        .periods-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .period-pill {
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: rgba(56,189,248,0.06);
+            border: 1px solid rgba(56,189,248,0.18);
+            color: var(--accent3);
+            font-size: 13px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ─── ALCANCE CARDS ─── */
+        .alcance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .alcance-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .alcance-card.included { border-top: 2px solid var(--teal); }
+        .alcance-card.excluded { border-top: 2px solid rgba(239,68,68,0.5); }
+
+        .alcance-header {
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+        }
+        .alcance-card.included .alcance-header { color: var(--teal); }
+        .alcance-card.excluded .alcance-header { color: rgba(239,68,68,0.8); }
+
+        /* ─── POWER BI ─── */
+        .pbi-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+        }
+
+        .pbi-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .pbi-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .pbi-fallback .pbi-icon { font-size: 40px; }
+        .pbi-fallback .pbi-msg { font-size: 14px; color: var(--text2); line-height: 1.6; }
+        .pbi-fallback a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .pbi-fallback a:hover { background: rgba(56,189,248,0.18); }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            opacity: 0.4;
+            margin-bottom: 4px;
+        }
+
+        .empty-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text2);
+        }
+
+        .empty-msg {
+            font-size: 13px;
+            color: var(--text3);
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div>
+        <div class="sidebar-logo">
+            <div class="logo-icon">🌦</div>
+            <div class="logo-text">
+                Minería de Datos
+                <span>Colombia · 1961–2020</span>
+            </div>
+        </div>
+
+        <div class="nav-label">Módulos</div>
+        <div class="menu">
+            <button class="nav-btn active" onclick="showSection('info', this)">
+                <div class="stat-value" style="color:var(--teal)">•</div> Información del Proyecto
+            </button>
+            <button class="nav-btn" onclick="showSection('evidente', this)">
+                <div class="stat-value" style="color:var(--teal)">•</div> Conocimiento Evidente
+            </button>
+            <button class="nav-btn" onclick="showSection('multidimensional', this)">
+                <div class="stat-value" style="color:var(--teal)">•</div> Conocimiento Multidimensional
+            </button>
+            <button class="nav-btn" onclick="showSection('oculto', this)">
+                <div class="stat-value" style="color:var(--teal)">•</div> Conocimiento Oculto
+            </button>
+            <button class="nav-btn" onclick="showSection('profundo', this)">
+                <div class="stat-value" style="color:var(--teal)">•</div> Conocimiento Profundo
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="footer-title">Equipo</div>
+        <p>Bairon Martínez</p>
+        <p>Lorenzo Lotero</p>
+        <p>Lucia Torres</p>
+        <p>Oscar Torres</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="topbar">
+        <div>
+            <div class="topbar-title">Análisis Descriptivo de Datos Climatológicos</div>
+            <div class="topbar-sub">Normales Climatológicas de Colombia · Minería de Datos · Mayo 2026</div>
+        </div>
+        <div class="badge">Proyecto Académico</div>
+    </div>
+
+    <div class="page-content">
+
+        <!-- ══════════════════════════════════
+             SECCIÓN 1: INFORMACIÓN DEL PROYECTO
+             ══════════════════════════════════ -->
+        <div id="info" class="section active">
+
+            <!-- Stats row -->
+            <div class="hero-grid">
+                <div class="stat-card">
+                    <div class="stat-value">14,716</div>
+                    <div class="stat-label">Registros</div>
+                    <div class="stat-desc">24 columnas por registro</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Períodos de 30 años</div>
+                    <div class="stat-desc">Desde 1961 hasta 2020</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color:var(--teal)">5</div>
+                    <div class="stat-label">Tecnologías</div>
+                    <div class="stat-desc">Flask · Spark · Power BI · Orange · SQL</div>
+                </div>
+            </div>
+
+            <!-- Introducción -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Introducción</div>
+                </div>
+                <p class="intro-text">
+                    Este proyecto forma parte del curso de <strong>Minería de Datos</strong> y tiene como propósito aplicar técnicas de análisis descriptivo a un conjunto de datos climatológicos reales de Colombia. Mediante la implementación de un flujo de trabajo integral que incorpora herramientas modernas de análisis, procesamiento y visualización de datos, se busca extraer información valiosa y patrones significativos en los datos climatológicos del país.
+                </p>
+                <br>
+                <p class="intro-text">
+                    El proyecto integra múltiples componentes tecnológicos: un <strong>modelo de datos dimensional (modelo estrella)</strong> que organiza la información de manera eficiente, una plataforma de <strong>visualización interactiva con Power BI</strong>, procesamiento distribuido con <strong>Apache Spark</strong> para análisis a escala, y herramientas de preparación de datos con <strong>Orange</strong>.
+                </p>
+                <br>
+                <p class="intro-text">
+                    Además, se desarrolla una <strong>aplicación web en Flask</strong> como punto central de integración, permitiendo acceder a todos los componentes del proyecto de manera organizada y presentando los resultados de cada fase en un entorno unificado.
+                </p>
+            </div>
+
+            <!-- Justificación -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Justificación</div>
+                </div>
+                <p class="body-text">
+                    Los datos climatológicos son fundamentales para comprender patrones ambientales, cambios en el clima y su impacto en sectores como agricultura, infraestructura y planificación ambiental. Colombia, como país con alta diversidad geográfica y climática, genera datos valiosos que requieren análisis profundos para extraer información útil.
+                </p>
+                <ul class="bullet-list" style="margin-top:14px">
+                    <li>Aplicación práctica de técnicas de minería de datos en un contexto real y relevante.</li>
+                    <li>Integración de múltiples herramientas y tecnologías en un flujo de trabajo cohesivo.</li>
+                    <li>Desarrollo de habilidades en análisis exploratorio, procesamiento distribuido y visualización de datos.</li>
+                    <li>Generación de insumos que permitan entender patrones climatológicos a lo largo de diferentes períodos.</li>
+                </ul>
+            </div>
+
+            <!-- Objetivos -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Objetivos</div>
+                </div>
+                <div class="section-number">Objetivo General</div>
+                <p class="body-text">
+                    Realizar un análisis descriptivo integral de datos climatológicos de Colombia mediante la aplicación de técnicas de minería de datos, integrando herramientas de almacenamiento dimensional, visualización interactiva, procesamiento distribuido y preparación de datos.
+                </p>
+                <hr class="divider">
+                <div class="section-number">Objetivos Específicos</div>
+                <div class="obj-grid">
+                    <div class="obj-item">
+                        <div class="obj-num">01</div>
+                        <div class="obj-text">Diseñar e implementar un modelo de datos dimensional (modelo estrella) que organice la información climatológica para análisis multidimensionales.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">02</div>
+                        <div class="obj-text">Crear un dashboard interactivo en Power BI que permita explorar los datos climatológicos desde múltiples dimensiones y patrones.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">03</div>
+                        <div class="obj-text">Ejecutar procesos de análisis descriptivo y agregación de datos utilizando Apache Spark para extraer estadísticas y métricas relevantes.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">04</div>
+                        <div class="obj-text">Aplicar técnicas de limpieza, validación y transformación de datos con Orange, identificando valores faltantes, anomalías y caracteres especiales.</div>
+                    </div>
+                    <div class="obj-item" style="grid-column: span 2;">
+                        <div class="obj-num">05</div>
+                        <div class="obj-text">Integrar los componentes del proyecto en una aplicación web desarrollada en Flask que centralice el acceso a todos los resultados y análisis.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alcance -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Alcance del Proyecto</div>
+                </div>
+                <div class="alcance-grid">
+                    <div class="alcance-card included">
+                        <div class="alcance-header">✓ Incluido</div>
+                        <ul class="bullet-list">
+                            <li>Análisis descriptivo de datos climatológicos (sin predicción ni modelado avanzado).</li>
+                            <li>Diseño del modelo estrella para organización dimensional de datos.</li>
+                            <li>Desarrollo de dashboard interactivo con visualizaciones en Power BI.</li>
+                            <li>Procesamiento y análisis con Apache Spark de métricas descriptivas.</li>
+                            <li>Limpieza, validación y transformación de datos con Orange.</li>
+                            <li>Aplicación web en Flask como plataforma de integración y presentación.</li>
+                        </ul>
+                    </div>
+                    <div class="alcance-card excluded">
+                        <div class="alcance-header">✗ Excluido</div>
+                        <ul class="bullet-list">
+                            <li>Modelos predictivos o de machine learning avanzado.</li>
+                            <li>Análisis de impacto ambiental o económico de cambios climáticos.</li>
+                            <li>Adquisición de nuevos datos externos fuera del dataset provisto.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dataset -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Descripción del Dataset</div>
+                </div>
+                <p class="body-text">
+                    El dataset utilizado contiene las <strong style="color:var(--accent3)">Normales Climatológicas de Colombia</strong>, obtenido de fuentes climatológicas oficiales. Incluye datos históricos de parámetros climatológicos registrados en múltiples estaciones meteorológicas distribuidas a lo largo del territorio colombiano.
+                </p>
+                <hr class="divider">
+                <div class="section-number" style="margin-bottom:10px">Previsualización — Primeras filas del dataset</div>
+                <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border); max-width:100%; display:block;">
+                    <table style="width:max-content; min-width:100%; border-collapse:collapse; font-size:12px; white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">PERIODO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">PARÁMETRO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">CÓDIGO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">CAT.</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">ESTACIÓN</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">MUNICIPIO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">DEPARTAMENTO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;font-weight:600;">ALTITUD</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">ENE</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">FEB</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">MAR</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">ABR</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">MAY</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">JUN</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">JUL</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">AGO</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">SEP</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">OCT</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">NOV</th>
+                                <th style="background:var(--bg3);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;">DIC</th>
+                                <th style="background:var(--bg3);color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;">ANUAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preview-tbody">
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">48,015,050</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">SP</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Aeropuerto Vasquez Cobo</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Leticia</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Amazonas</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">84 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">348.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">326.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">343.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">363.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">278.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">201.8</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">165.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">163.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">225.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">284.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">284.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">290.1</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">3275.3</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">26,180,160</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Abejorral</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Abejorral</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">2450 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">105.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">108.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">190.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">247.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">264.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">157.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">128.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">194.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">269.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">304.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">260.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">176.9</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">2408.3</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">26,180,090</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PG</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">El Buey</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Abejorral</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">2110 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">61.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">69.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">115.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">192.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">236.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">172.8</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">128.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">174.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">210.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">276.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">223.0</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">96.4</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">1957.8</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">27,010,850</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Amalfi</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Amalfi</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">1530 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">116.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">142.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">189.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">392.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">432.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">323.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">314.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">357.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">434.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">544.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">344.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">154.8</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">3747.7</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">27,010,890</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Cueva Santa</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Amalfi</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">1550 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">75.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">166.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">175.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">346.0</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">333.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">288.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">310.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">318.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">319.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">372.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">267.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">119.5</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">3093.8</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">26,195,020</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Ita Andes</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Andes</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">1180 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">84.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">101.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">158.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">223.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">242.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">174.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">172.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">209.8</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">207.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">236.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">193.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">114.5</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">2118.9</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid rgba(96,165,250,0.06)">
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">26,190,100</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Santa Bárbara</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Andes</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">1250 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">114.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">133.6</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">161.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">233.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">274.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">193.0</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">175.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">199.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">238.1</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">275.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">196.0</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">156.9</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">2352.1</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:9px 14px;color:var(--accent3);font-weight:500;">1961-1990</td>
+                                <td style="padding:9px 14px;color:var(--text2);">PRECIPITACIÓN</td>
+                                <td style="padding:9px 14px;color:var(--text3);">27,020,210</td>
+                                <td style="padding:9px 14px;"><span style="background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:2px 8px;font-size:10px;">PM</span></td>
+                                <td style="padding:9px 14px;color:var(--text);">Angostura</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Angostura</td>
+                                <td style="padding:9px 14px;color:var(--text2);">Antioquia</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">1650 m</td>
+                                <td style="padding:9px 14px;color:var(--text2);text-align:right;">71.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">79.7</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">91.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">263.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">361.9</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">349.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">323.4</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">331.8</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">362.3</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">352.5</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">194.2</td><td style="padding:9px 14px;color:var(--text2);text-align:right;">107.7</td>
+                                <td style="padding:9px 14px;color:var(--accent);font-weight:600;text-align:right;">2888.8</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size:11px;color:var(--text3);margin-top:8px;text-align:right;">Mostrando 8 de 14,716 registros · Desplaza horizontalmente para ver todas las columnas</p>
+                <hr class="divider">
+                <div class="dataset-grid">
+                    <div class="ds-item">
+                        <div class="ds-label">Información Temporal</div>
+                        <div class="ds-value">Período de reporte en rangos de 30 años</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Parámetros Climatológicos</div>
+                        <div class="ds-value" style="font-size:13px; line-height:1.9">
+                            ☀️ Brillo Solar<br>
+                            🌧 N.º de Días con Lluvia<br>
+                            🌦 Precipitación<br>
+                            🌡 Temperatura Mínima<br>
+                            🌡 Temperatura Máxima<br>
+                            🌡 Temperatura Media
+                        </div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Identificadores</div>
+                        <div class="ds-value">Código de estación, nombre, categoría</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Ubicación Geográfica</div>
+                        <div class="ds-value">Departamento, municipio, altitud, latitud, longitud</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Datos Mensuales</div>
+                        <div class="ds-value">Valores de precipitación de ENE a DIC</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Dato Anual</div>
+                        <div class="ds-value">Agregación anual del parámetro climatológico</div>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="section-number">Períodos de Análisis</div>
+                <div class="periods-row">
+                    <div class="period-pill">1961 – 1990</div>
+                    <div class="period-pill">1971 – 2000</div>
+                    <div class="period-pill">1981 – 2010</div>
+                    <div class="period-pill">1991 – 2020</div>
+                </div>
+            </div>
+
+            <!-- Marco Teórico -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Marco Teórico: Minería de Datos</div>
+                </div>
+                <p class="body-text">
+                    La minería de datos combina técnicas de estadística, inteligencia artificial, aprendizaje automático e ingeniería de bases de datos para explorar y analizar grandes volúmenes de datos con el objetivo de descubrir patrones, relaciones y conocimiento valioso. En este proyecto se enfatiza el <strong style="color:var(--accent3)">análisis descriptivo</strong> como punto de partida.
+                </p>
+                <hr class="divider">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px">
+                    <div>
+                        <div class="section-number">Análisis Descriptivo</div>
+                        <p class="body-text">Fase fundamental que busca resumir y caracterizar los datos mediante estadísticas, visualizaciones y agregaciones. Responde preguntas como: ¿Cuáles son las precipitaciones promedio por región? ¿Existen anomalías o valores atípicos?</p>
+                    </div>
+                    <div>
+                        <div class="section-number">Modelo Dimensional</div>
+                        <p class="body-text">El modelo estrella organiza datos en tablas de hechos (medidas cuantificables como precipitación) y dimensiones (tiempo, ubicación geográfica, características de estaciones), facilitando análisis rápidos y eficientes.</p>
+                    </div>
+                    <div>
+                        <div class="section-number">Preparación de Datos</div>
+                        <p class="body-text">Etapa crítica que incluye identificación y tratamiento de valores faltantes, eliminación de duplicados, validación de rangos, y limpieza de datos malformados. La calidad de esta fase impacta directamente la confiabilidad de los análisis.</p>
+                    </div>
+                    <div>
+                        <div class="section-number">Visualización de Datos</div>
+                        <p class="body-text">Esencial para comunicar hallazgos de manera clara y accesible. Un dashboard interactivo permite explorar datos dinámicamente, seleccionar filtros y ver cambios en tiempo real, facilitando la toma de decisiones.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metodología y Fases -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Metodología y Fases del Proyecto</div>
+                </div>
+                <div class="phases-list">
+                    <div class="phase-item">
+                        <div class="phase-left">
+                            <div class="phase-dot">F1</div>
+                            <div class="phase-line"></div>
+                        </div>
+                        <div class="phase-body">
+                            <div class="phase-name">Modelo Estrella · Preparación y Modelado de Datos</div>
+                            <p class="body-text">Análisis exploratorio inicial del dataset, diseño del modelo estrella con dimensiones y hechos, y estructuración de datos para análisis multidimensional. Facilita consultas rápidas sobre datos climatológicos y la integración con herramientas BI.</p>
+                        </div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-left">
+                            <div class="phase-dot">F2</div>
+                            <div class="phase-line"></div>
+                        </div>
+                        <div class="phase-body">
+                            <div class="phase-name">Dashboard Power BI · Visualización Interactiva</div>
+                            <p class="body-text">Conexión del modelo de datos con Power BI, diseño de dashboard con múltiples visualizaciones de distribución de precipitación por región y período, filtros interactivos por departamento, municipio, período y tipo de estación, e indicadores KPI.</p>
+                        </div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-left">
+                            <div class="phase-dot">F3</div>
+                            <div class="phase-line"></div>
+                        </div>
+                        <div class="phase-body">
+                            <div class="phase-name">Apache Spark · Procesamiento Distribuido</div>
+                            <p class="body-text">Implementación de scripts en Apache Spark para procesamiento a escala. Cálculo de estadísticas descriptivas (media, mediana, desviación estándar) por dimensión, agregaciones por período temporal y región geográfica, e identificación de valores extremos y anomalías.</p>
+                        </div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-left">
+                            <div class="phase-dot">F4</div>
+                            <div class="phase-line"></div>
+                        </div>
+                        <div class="phase-body">
+                            <div class="phase-name">Orange · Limpieza y Validación de Datos</div>
+                            <p class="body-text">Identificación y tratamiento de valores faltantes (NULL), eliminación de caracteres especiales, detección de duplicados y registros inconsistentes, validación de rangos y valores fuera de límites esperados, con visualización gráfica de resultados de limpieza.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tecnologías -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Tecnologías y Herramientas</div>
+                </div>
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Herramienta</th>
+                            <th>Versión</th>
+                            <th>Función en el Proyecto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="tech-name">Flask</td><td><span class="tech-badge">2.x</span></td><td>API web y plataforma de integración central</td></tr>
+                        <tr><td class="tech-name">Python</td><td><span class="tech-badge">3.8+</span></td><td>Lenguaje de programación base</td></tr>
+                        <tr><td class="tech-name">Apache Spark</td><td><span class="tech-badge">3.x</span></td><td>Procesamiento distribuido y análisis a escala</td></tr>
+                        <tr><td class="tech-name">Power BI</td><td><span class="tech-badge">Desktop/Service</span></td><td>Dashboard interactivo y visualización</td></tr>
+                        <tr><td class="tech-name">Orange</td><td><span class="tech-badge">3.x</span></td><td>Limpieza, validación y visualización de datos</td></tr>
+                        <tr><td class="tech-name">PostgreSQL / MySQL</td><td><span class="tech-badge">SQL</span></td><td>Almacenamiento del modelo dimensional</td></tr>
+                        <tr><td class="tech-name">Pandas / NumPy</td><td><span class="tech-badge">1.x</span></td><td>Manipulación y análisis de datos en Python</td></tr>
+                        <tr><td class="tech-name">Git</td><td><span class="tech-badge">2.x</span></td><td>Control de versiones del código</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recursos -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Recursos</div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px">
+                    <div class="ds-item">
+                        <div class="ds-label">Recursos Humanos</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.8">
+                            Equipo de desarrollo académico<br>Asesor · Profesor del curso
+                        </div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Recursos de Datos</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.8">
+                            14,716 registros · 24 campos<br>Períodos: 1961–2020
+                        </div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Recursos Tecnológicos</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.8">
+                            Computadores personales<br>Windows · macOS · Linux
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /info -->
+
+
+        <!-- ══════════════════════════════════
+             SECCIÓN 2: CONOCIMIENTO EVIDENTE
+             ══════════════════════════════════ -->
+        <div id="evidente" class="section">
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Dashboard Interactivo — Power BI</div>
+                </div>
+                <p class="body-text" style="margin-bottom: 20px">
+                    Visualización interactiva de los datos climatológicos de Colombia. El dashboard permite explorar distribuciones de precipitación por región y período, aplicar filtros por departamento, municipio y tipo de estación, y consultar indicadores KPI con estadísticas principales.
+                </p>
+
+                <div class="pbi-container">
+                    <iframe
+                        title="Proyecto_MIneria_Paso1"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiMjUwM2Q3M2MtMDk3OC00YmIzLTk5OWQtYmUxZjNkODIxZTc1IiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9"
+                        frameborder="0"
+                        allowFullScreen="true">
+                    </iframe>
+                </div>
+
+                <p style="font-size:12px; color:var(--text3); margin-top:12px; text-align:center;">
+                    <a href="https://app.powerbi.com/view?r=eyJrIjoiMjUwM2Q3M2MtMDk3OC00YmIzLTk5OWQtYmUxZjNkODIxZTc1IiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9"
+                       target="_blank"
+                       style="color:var(--accent); text-decoration:none; font-weight:500">
+                        Abrir en pantalla completa ↗
+                    </a>
+                </p>
+            </div>
+
+            <!-- Resumen de lo que muestra el dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🗺</div>
+                    <div class="card-title">¿Qué muestra este dashboard?</div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div class="ds-item">
+                        <div class="ds-label">Distribución Regional</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Precipitación promedio por departamento y municipio a lo largo del territorio colombiano.</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Análisis Temporal</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Variaciones año a año entre los cuatro períodos de 30 años analizados.</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Filtros Interactivos</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Por departamento, municipio, período de tiempo y tipo de estación meteorológica.</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Indicadores KPI</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Estadísticas principales: media, máximos, mínimos y tendencias de precipitación.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /evidente -->
+
+
+        <!-- ══════════════════════════════════
+             SECCIONES VACÍAS
+             ══════════════════════════════════ -->
+        <div id="multidimensional" class="section">
+            <div class="card">
+                <div class="empty-state">
+                    <div class="empty-icon">🔷</div>
+                    <div class="empty-title">Conocimiento Multidimensional</div>
+                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="oculto" class="section">
+            <div class="card">
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <div class="empty-title">Conocimiento Oculto</div>
+                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profundo" class="section">
+            <div class="card">
+                <div class="empty-state">
+                    <div class="empty-icon">🧠</div>
+                    <div class="empty-title">Conocimiento Profundo</div>
+                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /page-content -->
+</div><!-- /main -->
+
+<script>
+    function showSection(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    }
+</script>
+</body>
+</html>
