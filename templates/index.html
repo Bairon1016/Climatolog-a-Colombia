@@ -1241,17 +1241,222 @@
 
 
         <!-- ══════════════════════════════════
+             SECCIÓN 3: CONOCIMIENTO MulTIDIMENSIONAL
              SECCIONES VACÍAS
              ══════════════════════════════════ -->
         <div id="multidimensional" class="section">
             <div class="card">
-                <div class="empty-state">
-                    <div class="empty-icon">🔷</div>
-                    <div class="empty-title">Conocimiento Multidimensional</div>
-                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+                <div class="card-header">
+                    <div class="card-icon">🔷</div>
+                    <div class="card-title">Conocimiento Multidimensional</div>
                 </div>
+            <p class="intro-text">
+            Esta sección presenta los resultados del análisis multidimensional sobre las <strong>Normales Climatológicas de Colombia</strong> a partir del modelo estrella implementado en SQL Server. Se realizaron consultas analíticas sobre las dimensiones de geografía, tiempo, período y parámetro climático, permitiendo identificar patrones de comportamiento climático a nivel departamental y por estación meteorológica.
+            </p>
+        <br>
+            <p class="intro-text">
+            El análisis se organiza en tres componentes: <strong>consultas analíticas fijas</strong> con visualizaciones de los principales parámetros climáticos, un <strong>explorador interactivo</strong> con filtros por parámetro, departamento y período, y una <strong>consola SQL libre</strong> que permite ejecutar consultas personalizadas directamente sobre el modelo estrella en la nube.
+            </p>
+            <hr class="divider">
+                <div class="obj-grid">
+                <div class="obj-item">
+                    <div class="obj-num">01</div>
+                    <div class="obj-text">Consultas analíticas fijas sobre precipitación, temperaturas y días de lluvia visualizadas en gráficas y tablas.</div>
+                </div>
+            <div class="obj-item">
+                <div class="obj-num">02</div>
+                <div class="obj-text">Explorador con filtros desplegables por parámetro climático, departamento y período de 30 años.</div>
+            </div>
+            <div class="obj-item">
+                <div class="obj-num">03</div>
+                <div class="obj-text">Consola SQL libre para ejecutar cualquier consulta SELECT directamente sobre la base de datos en la nube.</div>
+            </div>
+            <div class="obj-item">
+                <div class="obj-num">04</div>
+                <div class="obj-text">Datos conectados en tiempo real desde SQL Server en Somee con 5 dimensiones y una tabla de hechos climáticos.</div>
+            </div>
             </div>
         </div>
+                <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌧</div>
+                    <div class="card-title">Precipitación promedio por departamento</div>
+                 </div>
+             <div style="overflow-y:scroll;height:400px;border-radius:10px;">
+             <div style="position:relative;height:900px;">
+                <canvas id="chart-precip"></canvas>
+             </div>
+            </div>
+        </div>
+
+         <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🌡</div>
+                <div class="card-title">Temperatura media promedio por departamento</div>
+            </div>
+            <div style="overflow-y:scroll;height:400px;border-radius:10px;">
+            <div style="position:relative;height:900px;">
+                <canvas id="chart-temp"></canvas>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+        <div class="card-header">
+            <div class="card-icon">🔆</div>
+            <div class="card-title">Temperatura máxima promedio por departamento</div>
+        </div>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+            <table class="tech-table">
+                <thead><tr><th>Departamento</th><th>Promedio (°C)</th></tr></thead>
+                <tbody>
+                    {% for row in temp_max_depto %}
+                    <tr>
+                        <td class="tech-name">{{ row.departamento }}</td>
+                        <td>{{ row.promedio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">❄</div>
+            <div class="card-title">Temperatura mínima promedio por departamento</div>
+        </div>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+            <table class="tech-table">
+                <thead><tr><th>Departamento</th><th>Promedio (°C)</th></tr></thead>
+                <tbody>
+                    {% for row in temp_min_depto %}
+                    <tr>
+                        <td class="tech-name">{{ row.departamento }}</td>
+                        <td>{{ row.promedio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">📍</div>
+            <div class="card-title">Top 10 estaciones con más días de lluvia</div>
+        </div>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+            <table class="tech-table">
+                <thead><tr><th>#</th><th>Estación</th><th>Departamento</th><th>Promedio (días)</th></tr></thead>
+                <tbody>
+                    {% for row in dias_lluvia_top %}
+                    <tr>
+                        <td style="color:var(--text3)">{{ loop.index }}</td>
+                        <td class="tech-name">{{ row.estacion }}</td>
+                        <td style="color:var(--text2)">{{ row.departamento }}</td>
+                        <td>{{ row.promedio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">🔎</div>
+            <div class="card-title">Explorador con filtros</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+                <div class="nav-label">Parámetro</div>
+                <select id="f-parametro" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
+                    {% for p in parametros %}
+                    <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <div class="nav-label">Departamento (opcional)</div>
+                <select id="f-departamento" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
+                    <option value="">Todos</option>
+                    {% for d in departamentos %}
+                    <option value="{{ d }}">{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <div class="nav-label">Período (opcional)</div>
+                <select id="f-periodo" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
+                    <option value="">Todos</option>
+                    {% for p in periodos %}
+                    <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button onclick="ejecutarFiltro()" style="padding:10px 24px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer">
+            Consultar
+        </button>
+        <div id="filtro-resultado" style="margin-top:16px"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">💻</div>
+            <div class="card-title">Consola SQL libre</div>
+        </div>
+        <p class="body-text" style="margin-bottom:12px">Escribe cualquier consulta SELECT sobre el modelo estrella.</p>
+        <textarea id="sql-input" rows="5" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical">SELECT TOP 5 g.departamento, p.parametro, ROUND(AVG(h.valor_medicion), 2) as promedio
+            FROM Hechos_Climaticos h
+            JOIN Dim_Geografia g ON h.id_geo = g.id_geo
+            JOIN Dim_Parametro p ON h.id_parametro = p.id_parametro
+            GROUP BY g.departamento, p.parametro
+            ORDER BY promedio DESC</textarea>
+        <button onclick="ejecutarSQL()" style="margin-top:10px;padding:10px 24px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer">
+            Ejecutar
+        </button>
+        <div id="sql-resultado" style="margin-top:16px"></div>
+    </div>
+
+    <div class="card">
+    <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-title">¿Qué muestra este modelo estrella?</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="ds-item">
+            <div class="ds-label">Consultas analíticas fijas</div>
+            <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
+                Precipitación promedio · Temperatura media · Temperatura máxima · Temperatura mínima · Top 10 estaciones con más días de lluvia
+            </div>
+        </div>
+        <div class="ds-item">
+            <div class="ds-label">Explorador interactivo</div>
+            <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
+                Filtra por parámetro climático, departamento y período de análisis. Resultados en tabla dinámica en tiempo real.
+            </div>
+        </div>
+        <div class="ds-item">
+            <div class="ds-label">Consola SQL libre</div>
+            <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
+                Ejecuta cualquier consulta SELECT sobre las tablas: Hechos_Climaticos, Dim_Geografia, Dim_Estacion, Dim_Parametro, Dim_Tiempo, Dim_Periodo.
+            </div>
+        </div>
+        <div class="ds-item">
+            <div class="ds-label">Modelo estrella</div>
+            <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
+                1 tabla de hechos · 5 dimensiones · 14,716 registros · 4 períodos de 30 años · Hospedado en SQL Server via Somee.
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+        <!-- ══════════════════════════════════
+             SECCIONES VACÍAS
+             ══════════════════════════════════ -->
 
         <div id="oculto" class="section">
             <div class="card">
@@ -1276,13 +1481,141 @@
     </div><!-- /page-content -->
 </div><!-- /main -->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function showSection(id, btn) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
+        if (id === 'multidimensional') iniciarGraficas();
+    }
+
+    let graficasIniciadas = false;
+    function iniciarGraficas() {
+        if (graficasIniciadas) return;
+        graficasIniciadas = true;
+
+        const precipData = {{ precip_depto | tojson }};
+        const tempData   = {{ temp_media_depto | tojson }};
+
+        new Chart(document.getElementById('chart-precip'), {
+            type: 'bar',
+            data: {
+                labels: precipData.map(r => r.departamento),
+                datasets: [{
+                    data: precipData.map(r => r.promedio),
+                    backgroundColor: 'rgba(56,189,248,0.5)',
+                    borderColor: 'rgba(56,189,248,0.9)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: c => ` ${c.raw} mm` } }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Promedio (mm)', color: '#5a7a9a', font: { size: 12 } },
+                        ticks: { color: '#94afc8' },
+                        grid: { color: 'rgba(96,165,250,0.08)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Departamento', color: '#5a7a9a', font: { size: 12 } },
+                        ticks: { color: '#94afc8', font: { size: 11 } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chart-temp'), {
+            type: 'bar',
+            data: {
+                labels: tempData.map(r => r.departamento),
+                datasets: [{
+                    data: tempData.map(r => r.promedio),
+                    backgroundColor: 'rgba(45,212,191,0.5)',
+                    borderColor: 'rgba(45,212,191,0.9)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: c => ` ${c.raw} °C` } }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Promedio (°C)', color: '#5a7a9a', font: { size: 12 } },
+                        ticks: { color: '#94afc8' },
+                        grid: { color: 'rgba(96,165,250,0.08)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Departamento', color: '#5a7a9a', font: { size: 12 } },
+                        ticks: { color: '#94afc8', font: { size: 11 } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderTabla(datos, contenedorId) {
+        const contenedor = document.getElementById(contenedorId);
+        if (!datos.length) { contenedor.innerHTML = '<p style="color:var(--text3);font-size:13px">Sin resultados.</p>'; return; }
+        const cols = Object.keys(datos[0]);
+        let html = '<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:8px"><table class="tech-table"><thead><tr>';
+        cols.forEach(c => html += `<th>${c}</th>`);
+        html += '</tr></thead><tbody>';
+        datos.forEach(row => {
+            html += '<tr>';
+            cols.forEach(c => html += `<td>${row[c] ?? ''}</td>`);
+            html += '</tr>';
+        });
+        html += '</tbody></table></div>';
+        contenedor.innerHTML = html;
+    }
+
+    async function ejecutarFiltro() {
+        const body = {
+            parametro: document.getElementById('f-parametro').value,
+            departamento: document.getElementById('f-departamento').value,
+            periodo: document.getElementById('f-periodo').value
+        };
+        document.getElementById('filtro-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+        const res = await fetch('/consulta_filtro', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(body)
+        });
+        const datos = await res.json();
+        renderTabla(datos, 'filtro-resultado');
+    }
+
+    async function ejecutarSQL() {
+        const sql = document.getElementById('sql-input').value;
+        document.getElementById('sql-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+        const res = await fetch('/consulta_libre', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({sql})
+        });
+        const datos = await res.json();
+        if (datos.error) {
+            document.getElementById('sql-resultado').innerHTML = `<p style="color:#ef4444;font-size:13px">Error: ${datos.error}</p>`;
+            return;
+        }
+        renderTabla(datos, 'sql-resultado');
     }
 </script>
 </body>
