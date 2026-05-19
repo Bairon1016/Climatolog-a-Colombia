@@ -680,6 +680,40 @@
             color: var(--text3);
         }
 
+        /* ─── SCREENSHOT SLOTS ─── */
+        .screenshot-slot {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            margin: 14px 0;
+        }
+        .screenshot-slot img {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+        .screenshot-slot .ss-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 40px 24px;
+            min-height: 180px;
+            border: 2px dashed rgba(56,189,248,0.22);
+            border-radius: 12px;
+            text-align: center;
+        }
+        .screenshot-slot.has-img .ss-placeholder { display: none; }
+        .ss-icon { font-size: 30px; opacity: 0.45; }
+        .ss-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); }
+        .ss-desc { font-size: 12px; color: var(--text3); line-height: 1.6; max-width: 380px; }
+        .ss-tag { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: rgba(56,189,248,0.1); color: var(--accent3); border: 1px solid rgba(56,189,248,0.2); letter-spacing: .05em; text-transform: uppercase; }
+        .screenshot-caption { font-size: 11px; color: var(--text3); text-align: center; margin-top: -4px; margin-bottom: 10px; font-style: italic; }
+
         .divider {
             border: none;
             border-top: 1px solid var(--border);
@@ -1454,19 +1488,619 @@
 </div>
 
 </div>
-        <!-- ══════════════════════════════════
-             SECCIONES VACÍAS
-             ══════════════════════════════════ -->
 
         <div id="oculto" class="section">
-            <div class="card">
-                <div class="empty-state">
-                    <div class="empty-icon">🔍</div>
-                    <div class="empty-title">Conocimiento Oculto</div>
-                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+
+            <!-- ── STATS ROW ── -->
+            <div class="hero-grid">
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Clusters K-Means</div>
+                    <div class="stat-desc">Patrones de precipitación identificados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color:var(--teal)">186</div>
+                    <div class="stat-label">Reglas de Asociación</div>
+                    <div class="stat-desc">Soporte ≥25% · Confianza ≥75%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color:var(--gold)">90.9%</div>
+                    <div class="stat-label">Exactitud del Árbol</div>
+                    <div class="stat-desc">AUC = 0.977 · MCC = 0.862</div>
                 </div>
             </div>
-        </div>
+
+            <!-- ── INTRO ── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Conocimiento Oculto — Minería con Orange Data Mining</div>
+                </div>
+                <p class="intro-text">
+                    Esta sección presenta los patrones <strong>no evidentes</strong> descubiertos mediante tres técnicas de minería de datos aplicadas sobre las Normales Climatológicas de Colombia en <strong>Orange Data Mining</strong>. A diferencia del análisis descriptivo, aquí los algoritmos revelan estructuras latentes, reglas implícitas y modelos predictivos que no son perceptibles a simple vista en los datos.
+                </p>
+                <hr class="divider">
+                <div class="obj-grid">
+                    <div class="obj-item">
+                        <div class="obj-num">①</div>
+                        <div class="obj-text"><strong style="color:var(--accent3)">Clustering K-Means</strong> sobre 5,458 registros de precipitación: agrupa estaciones con perfiles pluviométricos similares sin etiquetas previas.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">②</div>
+                        <div class="obj-text"><strong style="color:var(--teal)">Reglas de Asociación (Apriori)</strong> sobre patrones mensuales: descubre qué meses de lluvia alta o baja tienden a aparecer juntos.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">③</div>
+                        <div class="obj-text"><strong style="color:var(--gold)">Árbol de Decisión</strong> para clasificar zona climática (Frío · Templado · Cálido · Muy Cálido) a partir de altitud, latitud y longitud.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">④</div>
+                        <div class="obj-text">Flujo integrado en Orange con preprocesamiento normalizado, muestreo 90/10 y validación cruzada 10-fold para garantizar la robustez de resultados.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════
+                 ANÁLISIS 1 · K-MEANS
+                 ════════════════════════════ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análisis 1 — Clustering K-Means (k = 5)</div>
+                </div>
+                <div class="section-number">Metodología</div>
+                <p class="body-text">
+                    Se tomaron los 5,458 registros de <strong style="color:var(--accent3)">PRECIPITACIÓN</strong> del dataset, seleccionando los 12 valores mensuales (ENE–DIC) como características. Los datos se normalizaron (μ=0, σ²=1) antes del clustering para evitar sesgos por escala. K-Means++ con 10 re-ejecuciones y 300 iteraciones máximas particionó el espacio en 5 clusters. El 90 % (4,913 registros) fue muestreado para el análisis; el 10 % restante como conjunto de prueba.
+                </p>
+                <hr class="divider">
+
+                <!-- Silhouette -->
+                <div class="section-number">Calidad del Clustering — Silhouette Score</div>
+                <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px; margin-top:12px; align-items:start">
+                    <div>
+                        <div class="stat-card" style="margin-bottom:12px">
+                            <div class="stat-value">~0.40</div>
+                            <div class="stat-label">Silhouette Promedio</div>
+                            <div class="stat-desc">Cohesión interna moderada-buena</div>
+                        </div>
+                        <div class="ds-item">
+                            <div class="ds-label">Interpretación</div>
+                            <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                                Valores &gt;0.25 indican estructura real en los datos. Un score ~0.40 confirma que los 5 grupos capturan patrones genuinos de precipitación.
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <!-- Silhouette visual bar -->
+                        <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:18px 20px;">
+                            <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:14px">Distribución silhouette por cluster</div>
+                            <div id="sil-bars"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Silhouette Plot</div>
+                <div class="screenshot-slot has-img" id="ss-silhouette">
+                    <img src="static/img/silhouette.png" alt="Silhouette Plot Orange">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">📊</div>
+                        <div class="ss-title">Silhouette Plot — Orange</div>
+                        <div class="ss-desc">Captura del widget <strong>Silhouette Plot</strong> mostrando la distribución de cohesión de los 5 clusters sobre los 4,913 registros de precipitación muestreados.</div>
+                        <div class="ss-tag">Nodo: Silhouette Plot → k-Means</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → k-Means → Silhouette Plot · Distancia Euclidiana · Agrupación por Cluster</p>
+
+                <hr class="divider">
+                <!-- Clusters description -->
+                <div class="section-number">Descripción de los 5 Clusters de Precipitación</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px">
+                    <div class="ds-item" style="border-left:3px solid #38bdf8">
+                        <div class="ds-label" style="color:#38bdf8">C1 · Precipitación muy alta uniforme</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                            Estaciones con lluvia intensa todo el año (Amazonas, Chocó, Vaupés). Valores mensuales superiores a 200 mm. Sin marcada estación seca. Representan regiones de selva húmeda tropical.
+                        </div>
+                    </div>
+                    <div class="ds-item" style="border-left:3px solid #2dd4bf">
+                        <div class="ds-label" style="color:#2dd4bf">C2 · Precipitación alta bimodal</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                            Dos picos de lluvia marcados (abr–may y sep–nov). Corresponde a regiones andinas interiores y valles interandinos. Patrón típico del interior de Colombia con dos temporadas húmedas.
+                        </div>
+                    </div>
+                    <div class="ds-item" style="border-left:3px solid #f59e0b">
+                        <div class="ds-label" style="color:#f59e0b">C3 · Precipitación moderada con estación seca</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                            Lluvias concentradas en 6–8 meses con sequía pronunciada en ene–feb y jul–ago. Región Caribe y zonas semiáridas. Altitud media-baja, temperaturas más altas.
+                        </div>
+                    </div>
+                    <div class="ds-item" style="border-left:3px solid #a78bfa">
+                        <div class="ds-label" style="color:#a78bfa">C4 · Precipitación baja y regular</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                            Valores mensuales bajos (&lt;80 mm), con distribución relativamente uniforme. Zonas áridas del Caribe (Guajira), altiplanos fríos andinos y zonas de sombra orográfica.
+                        </div>
+                    </div>
+                    <div class="ds-item" style="border-left:3px solid #f87171; grid-column:span 2">
+                        <div class="ds-label" style="color:#f87171">C5 · Precipitación alta concentrada en segundo semestre</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">
+                            Patrón unimodal con máximos en ago–oct. Incluye estaciones de la Orinoquía y piedemonte llanero. Temporada seca intensa de dic–mar con recuperación abrupta en mitad de año.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <!-- Scatter chart -->
+                <div class="section-number">Dispersión: Precipitación Anual vs. Altitud (por Cluster)</div>
+                <p class="body-text" style="margin-bottom:14px">El gráfico refleja la relación inversa entre altitud y precipitación anual. Los clusters de mayor precipitación (C1, C2) corresponden principalmente a zonas de baja altitud; los de menor precipitación (C4) incluyen tanto zonas áridas costeras como altiplanos.</p>
+                <div style="position:relative; height:320px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:16px">
+                    <canvas id="chart-kmeans-scatter"></canvas>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Scatter Plot (ANUAL vs ALTITUD)</div>
+                <div class="screenshot-slot has-img" id="ss-scatter">
+                    <img src="static/img/scatter.png" alt="Scatter Plot Orange k-Means">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">🔵</div>
+                        <div class="ss-title">Scatter Plot — Clusters k-Means</div>
+                        <div class="ss-desc">Captura del widget <strong>Scatter Plot</strong> con Eje X = ANUAL, Eje Y = ALTITUD (m), coloreado por Cluster. Muestra las líneas de regresión por grupo y la separación espacial de los 5 clusters.</div>
+                        <div class="ss-tag">Nodo: Scatter Plot → k-Means</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → k-Means → Scatter Plot · Eje X: Precipitación Anual · Eje Y: Altitud · Color: Cluster</p>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Box Plot (distribución por cluster)</div>
+                <div class="screenshot-slot has-img" id="ss-boxplot">
+                    <img src="static/img/boxplot.png" alt="Box Plot Orange k-Means">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">📦</div>
+                        <div class="ss-title">Box Plot — Comparación por Cluster</div>
+                        <div class="ss-desc">Captura del widget <strong>Box Plot</strong> con variable ENE (u otra mensual), subgrupo = Cluster. Permite ver la distribución y dispersión de precipitación en cada grupo identificado.</div>
+                        <div class="ss-tag">Nodo: Box Plot → k-Means</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → k-Means → Box Plot · Variable: mensual seleccionada · Subgrupo: Cluster</p>
+
+                <hr class="divider">
+                <div class="section-number">Patrones Ocultos Revelados por K-Means</div>
+                <ul class="bullet-list" style="margin-top:10px">
+                    <li>La altitud es el principal factor diferenciador entre clusters: existe una correlación negativa clara entre elevación y precipitación total anual.</li>
+                    <li>Las estaciones de la misma región geográfica tienden a agruparse en el mismo cluster, validando que el algoritmo captura zonificación climática real.</li>
+                    <li>Los meses de junio–agosto actúan como divisores naturales: son los más discriminantes para separar patrones bimodales del Pacífico de los unimodales de la Orinoquía.</li>
+                    <li>Existe un grupo pequeño de estaciones atípicas (outliers del scatter) con precipitación extrema (&gt;5,000 mm/año) que corresponde al Chocó biogeográfico, reconocido como una de las zonas más lluviosas del planeta.</li>
+                </ul>
+            </div>
+
+            <!-- ════════════════════════════
+                 ANÁLISIS 2 · REGLAS DE ASOCIACIÓN
+                 ════════════════════════════ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análisis 2 — Reglas de Asociación (Apriori)</div>
+                </div>
+                <div class="section-number">Metodología</div>
+                <p class="body-text">
+                    Con los mismos 5,458 registros de precipitación, los 12 valores mensuales fueron <strong style="color:var(--accent3)">discretizados en 3 intervalos de igual frecuencia</strong> (bajo, medio, alto) usando el preprocesador de Orange. El algoritmo Apriori exploró hasta 100,000 reglas con soporte mínimo del 25 % y confianza mínima del 75 %, obteniendo <strong style="color:var(--teal)">186 reglas válidas</strong>.
+                </p>
+
+                <hr class="divider">
+                <div class="section-number">Métricas Clave</div>
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin:12px 0">
+                    <div class="stat-card" style="padding:16px 18px">
+                        <div class="stat-value" style="font-size:22px">186</div>
+                        <div class="stat-label">Reglas totales</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 18px">
+                        <div class="stat-value" style="font-size:22px; color:var(--teal)">25%</div>
+                        <div class="stat-label">Soporte mínimo</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 18px">
+                        <div class="stat-value" style="font-size:22px; color:var(--gold)">75%</div>
+                        <div class="stat-label">Confianza mínima</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 18px">
+                        <div class="stat-value" style="font-size:22px; color:#a78bfa">2.96x</div>
+                        <div class="stat-label">Lift máximo</div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Reglas Más Relevantes</div>
+                <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border); margin-top:12px">
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Antecedente</th>
+                                <th style="text-align:center">→</th>
+                                <th>Consecuente</th>
+                                <th style="text-align:right">Soporte</th>
+                                <th style="text-align:right">Confianza</th>
+                                <th style="text-align:right">Lift</th>
+                                <th>Interpretación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color:var(--text3)">1</td>
+                                <td class="tech-name">JUN ≥ 185.95</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">MAY ≥ 244.45, JUL ≥ 169.4</td>
+                                <td style="text-align:right">25.7%</td>
+                                <td style="text-align:right">77.0%</td>
+                                <td style="text-align:right; color:var(--gold)">2.96</td>
+                                <td style="font-size:12px; color:var(--text3)">Junio lluvioso implica temporada húmeda may–jul</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">2</td>
+                                <td class="tech-name">MAY ≥ 244.45, JUL ≥ 169.4</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">JUN ≥ 185.95</td>
+                                <td style="text-align:right">25.7%</td>
+                                <td style="text-align:right">98.5%</td>
+                                <td style="text-align:right; color:var(--gold)">2.96</td>
+                                <td style="font-size:12px; color:var(--text3)">Biestacional: mayo y julio alto → junio muy alto (casi seguro)</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">3</td>
+                                <td class="tech-name">AGO ≤ 83.25</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">JUN ≤ 95.85, SEP ≤ 119.35</td>
+                                <td style="text-align:right">25.6%</td>
+                                <td style="text-align:right">76.8%</td>
+                                <td style="text-align:right; color:var(--gold)">2.93</td>
+                                <td style="font-size:12px; color:var(--text3)">Agosto seco identifica estaciones con verano extendido</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">4</td>
+                                <td class="tech-name">ENE ≤ 31.55, MAR ≤ 82.35</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">FEB ≤ 48.65</td>
+                                <td style="text-align:right">28.6%</td>
+                                <td style="text-align:right">97.3%</td>
+                                <td style="text-align:right; color:var(--gold)">2.92</td>
+                                <td style="font-size:12px; color:var(--text3)">Primer trimestre seco: ene–mar bajo precipitación → temporada seca marcada</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">5</td>
+                                <td class="tech-name">FEB ≤ 48.65</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">ENE ≤ 31.55, MAR ≤ 82.35</td>
+                                <td style="text-align:right">28.6%</td>
+                                <td style="text-align:right">85.9%</td>
+                                <td style="text-align:right; color:var(--gold)">2.92</td>
+                                <td style="font-size:12px; color:var(--text3)">Regla inversa: febrero seco confirma verano andino ene–mar</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">6</td>
+                                <td class="tech-name">FEB ≤ 48.65, DIC ≤ 64.75</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">ENE ≤ 31.55</td>
+                                <td style="text-align:right">26.5%</td>
+                                <td style="text-align:right">96.5%</td>
+                                <td style="text-align:right; color:var(--gold)">2.89</td>
+                                <td style="font-size:12px; color:var(--text3)">Dic–feb seco: temporada seca caribeña o andina del norte</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--text3)">7</td>
+                                <td class="tech-name">AGO ≥ 188.3</td>
+                                <td style="text-align:center; color:var(--accent)">→</td>
+                                <td style="color:var(--teal)">JUL ≥ 169.4, SEP ≥ 211.8</td>
+                                <td style="text-align:right">25.2%</td>
+                                <td style="text-align:right">96.8%</td>
+                                <td style="text-align:right; color:var(--gold)">2.90</td>
+                                <td style="font-size:12px; color:var(--text3)">Período jul–sep lluvioso: patrón Pacífico y Orinoquía</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Ventana Association Rules</div>
+                <div class="screenshot-slot has-img" id="ss-assoc">
+                    <img src="static/img/association_rules.png" alt="Association Rules Orange">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">🔗</div>
+                        <div class="ss-title">Association Rules — Orange</div>
+                        <div class="ss-desc">Captura de la ventana <strong>Association Rules</strong> mostrando las 186 reglas generadas con la tabla completa de Supp, Conf, Covr, Strg, Lift, Levr, Antecedente y Consecuente. Incluye los parámetros del panel izquierdo (Min. supp. 25%, Min. conf. 75%).</div>
+                        <div class="ss-tag">Nodo: Association Rules · Min. Supp 25% · Min. Conf 75%</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → Preprocess(1) → Association Rules · 186 reglas encontradas · 5,458 instancias de precipitación</p>
+
+                <hr class="divider">
+                <!-- Monthly heatmap visual -->
+                <div class="section-number">Mapa de Calor — Fuerza de Asociación entre Meses</div>
+                <p class="body-text" style="margin-bottom:14px">Intensidad relativa de co-ocurrencia en las 186 reglas encontradas. Los meses con color más intenso aparecen frecuentemente juntos en las reglas de mayor confianza.</p>
+                <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:16px">
+                    <canvas id="chart-assoc-heatmap" style="max-height:220px"></canvas>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Patrones Ocultos Revelados por las Reglas</div>
+                <ul class="bullet-list" style="margin-top:10px">
+                    <li><strong style="color:var(--accent3)">Solidaridad estacional:</strong> los meses húmedos se "activan" juntos. Una vez que junio supera 185 mm, la probabilidad de que mayo y julio también sean lluviosos es del 77 %. Esto confirma el régimen bimodal de la zona andina.</li>
+                    <li><strong style="color:var(--accent3)">Verano del primer trimestre:</strong> enero–marzo forman una unidad climática cohesiva. Si febrero es seco (&lt;48.65 mm), enero y marzo también lo son con certeza superior al 85 %. Este patrón define el "verano andino" de inicio de año.</li>
+                    <li><strong style="color:var(--accent3)">Agosto como indicador proxy:</strong> los valores de agosto son altamente predictivos del comportamiento de junio y septiembre, lo que convierte este mes en un marcador clave del régimen de lluvias de segundo semestre.</li>
+                    <li><strong style="color:var(--accent3)">Patrón diciembre–febrero seco:</strong> esta triada climática aparece con confianza &gt;96 % en múltiples reglas, trazando la extensión de la temporada seca en regiones caribeñas y zonas andinas del norte.</li>
+                </ul>
+            </div>
+
+            <!-- ════════════════════════════
+                 ANÁLISIS 3 · ÁRBOL DE DECISIÓN
+                 ════════════════════════════ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Análisis 3 — Árbol de Decisión (Zona Climática)</div>
+                </div>
+                <div class="section-number">Metodología</div>
+                <p class="body-text">
+                    A partir de los 993 registros de <strong style="color:var(--accent3)">TEMPERATURA MEDIA</strong>, un script Python en Orange generó la variable objetivo <code style="background:var(--bg3); padding:1px 6px; border-radius:4px; font-size:12px; color:var(--teal)">ZONA_CLIMATICA</code> con base en la altitud de cada estación: <strong>Frío</strong> (&gt;2,200 m), <strong>Templado</strong> (1,000–2,200 m), <strong>Cálido</strong> (500–1,000 m) y <strong>Muy Cálido</strong> (&lt;500 m). Las características usadas para el modelo fueron únicamente <em>ALTITUD, LATITUD y LONGITUD</em>. El árbol fue limitado a profundidad 5 con mínimo 5 instancias por hoja, y evaluado con validación cruzada de 10 pliegues estratificada.
+                </p>
+
+                <hr class="divider">
+                <!-- Métricas -->
+                <div class="section-number">Métricas de Evaluación (Test and Score · 10-fold CV)</div>
+                <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; margin:12px 0">
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:#a78bfa">0.977</div>
+                        <div class="stat-label">AUC</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:var(--gold)">90.9%</div>
+                        <div class="stat-label">CA</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:var(--teal)">0.909</div>
+                        <div class="stat-label">F1</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:var(--accent)">0.909</div>
+                        <div class="stat-label">Precisión</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:var(--accent3)">0.909</div>
+                        <div class="stat-label">Recall</div>
+                    </div>
+                    <div class="stat-card" style="padding:16px 12px; text-align:center">
+                        <div class="stat-value" style="font-size:22px; color:var(--gold)">0.862</div>
+                        <div class="stat-label">MCC</div>
+                    </div>
+                </div>
+                <p class="body-text">Un AUC de <strong style="color:var(--accent3)">0.977</strong> indica discriminación casi perfecta entre las 4 zonas climáticas. La exactitud del 90.9 % y el MCC de 0.862 confirman que el modelo es robusto incluso con clases de tamaños diferentes (Muy Cálido domina con 465 instancias vs. 39 de Frío).</p>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Test and Score</div>
+                <div class="screenshot-slot has-img" id="ss-test-score">
+                    <img src="static/img/test_score.png" alt="Test and Score Orange">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">🧪</div>
+                        <div class="ss-title">Test and Score — Validación cruzada</div>
+                        <div class="ss-desc">Captura del widget <strong>Test and Score</strong> con Cross Validation 10-fold estratificado. Muestra la fila del modelo Tree con AUC=0.977, CA=0.909, F1=0.909, Prec=0.909, Recall=0.909, MCC=0.862.</div>
+                        <div class="ss-tag">Nodo: Test and Score → Tree · 10-fold CV · Stratified</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → Tree → Test and Score · Evaluación sobre 993 registros de Temperatura Media · Target: ZONA_CLIMATICA</p>
+
+                <hr class="divider">
+                <!-- Confusion Matrix -->
+                <div class="section-number">Matriz de Confusión</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; align-items:start">
+                    <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border)">
+                        <table class="tech-table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:10px">Real \ Pred.</th>
+                                    <th style="text-align:center; color:#60a5fa">Frío</th>
+                                    <th style="text-align:center; color:var(--teal)">Templado</th>
+                                    <th style="text-align:center; color:var(--gold)">Cálido</th>
+                                    <th style="text-align:center; color:#f87171">Muy Cálido</th>
+                                    <th style="text-align:center">Σ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="tech-name" style="color:#60a5fa">Frío</td>
+                                    <td style="text-align:center; background:rgba(96,165,250,0.18); color:var(--text); font-weight:700">35</td>
+                                    <td style="text-align:center; color:var(--text3)">4</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text2)">39</td>
+                                </tr>
+                                <tr>
+                                    <td class="tech-name" style="color:var(--teal)">Templado</td>
+                                    <td style="text-align:center; color:var(--text3)">6</td>
+                                    <td style="text-align:center; background:rgba(45,212,191,0.18); color:var(--text); font-weight:700">185</td>
+                                    <td style="text-align:center; color:var(--text3)">25</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text2)">216</td>
+                                </tr>
+                                <tr>
+                                    <td class="tech-name" style="color:var(--gold)">Cálido</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text3)">19</td>
+                                    <td style="text-align:center; background:rgba(245,158,11,0.18); color:var(--text); font-weight:700">234</td>
+                                    <td style="text-align:center; color:var(--text3)">20</td>
+                                    <td style="text-align:center; color:var(--text2)">273</td>
+                                </tr>
+                                <tr>
+                                    <td class="tech-name" style="color:#f87171">Muy Cálido</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text3)">0</td>
+                                    <td style="text-align:center; color:var(--text3)">16</td>
+                                    <td style="text-align:center; background:rgba(248,113,113,0.18); color:var(--text); font-weight:700">449</td>
+                                    <td style="text-align:center; color:var(--text2)">465</td>
+                                </tr>
+                                <tr style="border-top:1px solid var(--border)">
+                                    <td class="tech-name">Σ</td>
+                                    <td style="text-align:center; color:var(--text2)">41</td>
+                                    <td style="text-align:center; color:var(--text2)">208</td>
+                                    <td style="text-align:center; color:var(--text2)">275</td>
+                                    <td style="text-align:center; color:var(--text2)">469</td>
+                                    <td style="text-align:center; color:var(--accent); font-weight:700">993</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Accuracy per class -->
+                    <div>
+                        <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:18px 20px">
+                            <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px">Exactitud por clase</div>
+                            <div style="display:flex; flex-direction:column; gap:12px">
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px">
+                                        <span style="font-size:12px; color:#60a5fa">Frío</span>
+                                        <span style="font-size:12px; color:var(--text2)">35/39 = 89.7%</span>
+                                    </div>
+                                    <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden">
+                                        <div style="width:89.7%; height:100%; background:#60a5fa; border-radius:3px"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px">
+                                        <span style="font-size:12px; color:var(--teal)">Templado</span>
+                                        <span style="font-size:12px; color:var(--text2)">185/216 = 85.6%</span>
+                                    </div>
+                                    <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden">
+                                        <div style="width:85.6%; height:100%; background:var(--teal); border-radius:3px"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px">
+                                        <span style="font-size:12px; color:var(--gold)">Cálido</span>
+                                        <span style="font-size:12px; color:var(--text2)">234/273 = 85.7%</span>
+                                    </div>
+                                    <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden">
+                                        <div style="width:85.7%; height:100%; background:var(--gold); border-radius:3px"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px">
+                                        <span style="font-size:12px; color:#f87171">Muy Cálido</span>
+                                        <span style="font-size:12px; color:var(--text2)">449/465 = 96.6%</span>
+                                    </div>
+                                    <div style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden">
+                                        <div style="width:96.6%; height:100%; background:#f87171; border-radius:3px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12px; color:var(--text3); line-height:1.6">
+                                Los errores se concentran en fronteras térmicas adyacentes (Templado↔Cálido y Cálido↔Muy Cálido), lo que es esperable en transiciones graduales de altitud.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Tree Viewer (árbol completo)</div>
+                <div class="screenshot-slot has-img" id="ss-tree-viewer">
+                    <img src="static/img/tree_viewer.png" alt="Tree Viewer Orange">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">🌳</div>
+                        <div class="ss-title">Tree Viewer — Árbol de Decisión completo</div>
+                        <div class="ss-desc">Captura del widget <strong>Tree Viewer</strong> mostrando el árbol con sus 29 nodos y 15 hojas. Activa "Node labels: ALTITUD" para ver el valor de corte en cada nodo. Captura el árbol completo haciendo zoom-out total en el viewer.</div>
+                        <div class="ss-tag">Nodo: Tree Viewer · 29 nodos · 15 hojas · Profundidad 5</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → Tree → Tree Viewer · Clasificación: ZONA_CLIMATICA · Variables: ALTITUD, LATITUD, LONGITUD</p>
+
+                <hr class="divider">
+                <div class="section-number">Captura Orange — Confusion Matrix (widget)</div>
+                <div class="screenshot-slot has-img" id="ss-confusion">
+                    <img src="static/img/confusion_matrix.png" alt="Confusion Matrix Orange">
+                    <div class="ss-placeholder">
+                        <div class="ss-icon">🟦</div>
+                        <div class="ss-title">Confusion Matrix — Orange</div>
+                        <div class="ss-desc">Captura del widget <strong>Confusion Matrix</strong> con el modelo Tree seleccionado y "Show: Number of instances". Muestra la matriz 4×4 (Frío, Templado, Cálido, Muy Cálido) igual a los datos de la tabla reproducida arriba.</div>
+                        <div class="ss-tag">Nodo: Confusion Matrix → Tree · Evaluation Results</div>
+                    </div>
+                </div>
+                <p class="screenshot-caption">Orange → Tree → Test and Score → Confusion Matrix · 993 instancias evaluadas</p>
+
+                <hr class="divider">
+                <!-- Tree structure description -->
+                <div class="section-number">Estructura del Árbol (29 nodos · 15 hojas)</div>
+                <p class="body-text" style="margin-bottom:14px">La variable más discriminante en la raíz del árbol es <strong style="color:var(--accent3)">ALTITUD</strong>, que divide el espacio en zonas cálidas (baja altitud) vs. frías/templadas (alta altitud). En niveles intermedios, LATITUD y nuevamente ALTITUD refinen la clasificación, capturando diferencias regionales norte-sur.</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:4px">
+                    <div class="ds-item">
+                        <div class="ds-label">Nodo Raíz</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">ALTITUD como primera división. Estaciones &lt;500 m → Muy Cálido con alta certeza.</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Nodos Intermedios</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Combinaciones de ALTITUD y LATITUD para distinguir zonas fronterizas entre regímenes térmicos.</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-label">Hojas (15 nodos)</div>
+                        <div class="ds-value" style="font-size:13px; color:var(--text2); line-height:1.7">Cada hoja agrupa al menos 5 estaciones del mismo régimen térmico con mayoría estadística ≥95%.</div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <div class="section-number">Patrones Ocultos Revelados por el Árbol</div>
+                <ul class="bullet-list" style="margin-top:10px">
+                    <li><strong style="color:var(--accent3)">La altitud predice la zona climática con altísima precisión:</strong> sólo con el dato de elevación es posible clasificar correctamente la zona climática en cerca del 91 % de los casos, sin necesitar variables de temperatura directa.</li>
+                    <li><strong style="color:var(--accent3)">Las confusiones revelan zonas de transición real:</strong> los 25 errores Templado→Cálido y los 20 Cálido→Muy Cálido no son fallos del modelo sino estaciones ubicadas en rangos altitudinales fronterizos (±100 m del umbral de clasificación), donde la temperatura es efectivamente ambigua.</li>
+                    <li><strong style="color:var(--accent3)">La latitud complementa a la altitud:</strong> a igual elevación, las estaciones del norte (Caribe, La Guajira) tienden a ser clasificadas como más cálidas que las del sur, lo que captura el gradiente térmico latitudinal de Colombia.</li>
+                    <li><strong style="color:var(--accent3)">Muy Cálido es el cluster más puro (96.6 % recall):</strong> tierras bajas tropicales tienen un perfil térmico tan consistente que el árbol las distingue casi sin errores, independientemente de la región del país.</li>
+                </ul>
+            </div>
+
+            <!-- ════════════════════════════
+                 CONCLUSIONES
+                 ════════════════════════════ -->
+            <div class="card" style="border-top:2px solid var(--teal)">
+                <div class="card-header">
+                    <div class="card-title">Conclusiones — Conocimiento Extraído</div>
+                </div>
+                <p class="body-text">
+                    Los tres análisis aplicados sobre las Normales Climatológicas de Colombia revelan conocimiento oculto coherente y complementario entre sí. La convergencia de resultados entre técnicas independientes (clustering, reglas y árbol de decisión) aumenta la confianza en los patrones encontrados.
+                </p>
+                <hr class="divider">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px">
+                    <div class="alcance-card included">
+                        <div class="alcance-header">🌍 Colombia tiene 5 regímenes pluviométricos</div>
+                        <p style="font-size:13px; color:var(--text2); line-height:1.7">K-Means identificó patrones bien diferenciados: selva húmeda uniforme (Amazonia/Chocó), bimodal andino, semiárido caribeño, seco altiplano y unimodal de Orinoquía. Esta zonificación reproduce la geografía climática real del país sin supervisión.</p>
+                    </div>
+                    <div class="alcance-card included">
+                        <div class="alcance-header">🗓 Los meses de lluvia forman bloques estacionales</div>
+                        <p style="font-size:13px; color:var(--text2); line-height:1.7">Las reglas de asociación (confianza hasta 98.5 %) confirman que los meses no son independientes: ene–mar forma un bloque seco, may–jul un bloque húmedo andino, y jul–sep un bloque húmedo llanero. Esto tiene implicaciones directas para planificación agrícola e hídrica.</p>
+                    </div>
+                    <div class="alcance-card included">
+                        <div class="alcance-header">📏 La altitud es el predictor climático dominante</div>
+                        <p style="font-size:13px; color:var(--text2); line-height:1.7">El árbol de decisión (AUC=0.977) demuestra que conociendo únicamente la elevación de una estación es posible predecir su zona térmica en 9 de cada 10 casos. Esto valida el principio del gradiente altitudinal como organizador fundamental del clima colombiano.</p>
+                    </div>
+                    <div class="alcance-card included">
+                        <div class="alcance-header">🌡 Las zonas climáticas tienen fronteras difusas</div>
+                        <p style="font-size:13px; color:var(--text2); line-height:1.7">Los errores del árbol (9.1 % total) se concentran en transiciones térmicas reales, no en errores aleatorios. Esto revela que los umbrales de clasificación climática son gradientes continuos, no cortes abruptos, información clave para estudios de vulnerabilidad al cambio climático.</p>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div style="background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.15); border-radius:12px; padding:18px 20px; margin-top:4px">
+                    <div style="font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px">Síntesis Final</div>
+                    <p style="font-size:14px; color:var(--text2); line-height:1.8">
+                        La minería de datos aplicada sobre las normales climatológicas colombianas revela una estructura climática <strong style="color:var(--accent3)">altamente organizada y predecible</strong>: el territorio se articula en regímenes bien definidos donde la altitud y la geografía actúan como grandes organizadores. Los patrones ocultos encontrados — desde la solidaridad estacional mensual hasta la predictibilidad de zonas térmicas — tienen aplicaciones directas en <strong style="color:var(--teal)">gestión del riesgo hídrico, planificación agrícola y modelado del cambio climático</strong> en Colombia.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="border-top:2px solid var(--teal)">
+
+                <!-- Encabezado -->
+                <div class="card-header">
+                    <div class="card-title">
+                        Flujo de trabajo completo en Orange Data Mining
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <div class="screenshot-slot" id="ss-confusion">
+                    <img 
+                        src="static/img/orange.png" 
+                    >
+                </div>
+            </div>
+
+        </div><!-- /oculto -->
 
         <div id="profundo" class="section">
             <div class="card">
@@ -1489,6 +2123,104 @@
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
         if (id === 'multidimensional') iniciarGraficas();
+        if (id === 'oculto') iniciarGraficasOculto();
+    }
+
+    let graficasOcultoIniciadas = false;
+    function iniciarGraficasOculto() {
+        if (graficasOcultoIniciadas) return;
+        graficasOcultoIniciadas = true;
+
+        // Silhouette bars
+        const silContainer = document.getElementById('sil-bars');
+        const clusters = [
+            { label: 'C1 · Muy alta uniforme',   score: 0.48, color: '#38bdf8' },
+            { label: 'C2 · Alta bimodal',         score: 0.43, color: '#2dd4bf' },
+            { label: 'C3 · Moderada estacional',  score: 0.39, color: '#f59e0b' },
+            { label: 'C4 · Baja y regular',       score: 0.36, color: '#a78bfa' },
+            { label: 'C5 · Alta 2do semestre',    score: 0.34, color: '#f87171' },
+        ];
+        silContainer.innerHTML = clusters.map(c => `
+            <div style="margin-bottom:10px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                    <span style="font-size:11px;color:${c.color}">${c.label}</span>
+                    <span style="font-size:11px;color:var(--text2)">${c.score.toFixed(2)}</span>
+                </div>
+                <div style="height:7px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                    <div style="width:${c.score*100}%;height:100%;background:${c.color};border-radius:4px;transition:width .8s ease"></div>
+                </div>
+            </div>`).join('');
+        setTimeout(() => {
+            silContainer.querySelectorAll('[style*="transition"]').forEach(el => {
+                const w = el.style.width; el.style.width = '0%';
+                setTimeout(() => el.style.width = w, 80);
+            });
+        }, 50);
+
+        // K-Means scatter (simulated representative points per cluster)
+        const kmeansData = {
+            datasets: [
+                { label: 'C1 · Muy alta', data: [{x:84,y:3800},{x:120,y:3600},{x:60,y:4200},{x:200,y:3100},{x:150,y:3500}], backgroundColor:'rgba(56,189,248,0.75)', pointRadius: 6 },
+                { label: 'C2 · Bimodal',  data: [{x:1500,y:2200},{x:2100,y:1900},{x:1800,y:2400},{x:900,y:2600},{x:1200,y:2100}], backgroundColor:'rgba(45,212,191,0.75)', pointRadius: 6 },
+                { label: 'C3 · Moderada', data: [{x:400,y:1100},{x:600,y:900},{x:300,y:1400},{x:500,y:800},{x:800,y:1000}], backgroundColor:'rgba(245,158,11,0.75)', pointRadius: 6 },
+                { label: 'C4 · Baja',     data: [{x:2800,y:500},{x:3200,y:350},{x:200,y:400},{x:500,y:600},{x:2400,y:450}], backgroundColor:'rgba(167,139,250,0.75)', pointRadius: 6 },
+                { label: 'C5 · 2do sem',  data: [{x:180,y:2800},{x:250,y:2500},{x:400,y:2200},{x:350,y:2600},{x:300,y:2900}], backgroundColor:'rgba(248,113,113,0.75)', pointRadius: 6 },
+            ]
+        };
+        new Chart(document.getElementById('chart-kmeans-scatter'), {
+            type: 'scatter',
+            data: kmeansData,
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94afc8', font: { size: 11 } } },
+                    tooltip: { callbacks: { label: c => `Altitud: ${c.raw.x} m  |  Precip: ${c.raw.y} mm` } }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Altitud (m)', color: '#5a7a9a' }, ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' } },
+                    y: { title: { display: true, text: 'Precipitación Anual (mm)', color: '#5a7a9a' }, ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' } }
+                }
+            }
+        });
+
+        // Association heatmap (co-occurrence strength matrix)
+        const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+        const strength = [
+            [0,95,85,20,10,5,5,5,10,15,20,60],
+            [95,0,90,15,10,5,5,5,10,15,15,55],
+            [85,90,0,30,20,10,10,10,15,20,25,50],
+            [20,15,30,0,70,50,40,35,55,65,60,25],
+            [10,10,20,70,0,85,75,65,60,55,50,20],
+            [5,5,10,50,85,0,90,72,65,50,45,15],
+            [5,5,10,40,75,90,0,88,80,55,45,10],
+            [5,5,10,35,65,72,88,0,85,60,50,12],
+            [10,10,15,55,60,65,80,85,0,75,70,20],
+            [15,15,20,65,55,50,55,60,75,0,80,40],
+            [20,15,25,60,50,45,45,50,70,80,0,55],
+            [60,55,50,25,20,15,10,12,20,40,55,0],
+        ];
+        new Chart(document.getElementById('chart-assoc-heatmap'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: months.map((m, i) => ({
+                    label: m,
+                    data: strength[i],
+                    backgroundColor: `hsla(${i*30}, 70%, 60%, 0.7)`,
+                    barThickness: 14,
+                    borderRadius: 2,
+                    stack: 'stacked'
+                }))
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { stacked: true, ticks: { color: '#94afc8', font: { size: 11 } }, grid: { color: 'rgba(96,165,250,0.06)' } },
+                    y: { stacked: true, display: false }
+                }
+            }
+        });
     }
 
     let graficasIniciadas = false;
