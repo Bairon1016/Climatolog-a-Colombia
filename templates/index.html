@@ -728,7 +728,7 @@
 <div class="sidebar">
     <div>
         <div class="sidebar-logo">
-            <div class="logo-icon">🌦</div>
+            <div class="logo-icon"></div>
             <div class="logo-text">
                 Minería de Datos
                 <span>Colombia · 1961–2020</span>
@@ -751,6 +751,9 @@
             </button>
             <button class="nav-btn" onclick="showSection('profundo', this)">
                 <div class="stat-value" style="color:var(--teal)">•</div> Conocimiento Profundo
+            </button>
+            <button class="nav-btn" onclick="showSection('comparativa', this)">
+                <div class="stat-value" style="color:var(--gold)">•</div> Tabla Comparativa
             </button>
         </div>
     </div>
@@ -1045,12 +1048,12 @@
                     <div class="ds-item">
                         <div class="ds-label">Parámetros Climatológicos</div>
                         <div class="ds-value" style="font-size:13px; line-height:1.9">
-                            ☀️ Brillo Solar<br>
-                            🌧 N.º de Días con Lluvia<br>
-                            🌦 Precipitación<br>
-                            🌡 Temperatura Mínima<br>
-                            🌡 Temperatura Máxima<br>
-                            🌡 Temperatura Media
+                            Brillo Solar<br>
+                            N.º de Días con Lluvia<br>
+                            Precipitación<br>
+                            Temperatura Mínima<br>
+                            Temperatura Máxima<br>
+                            Temperatura Media
                         </div>
                     </div>
                     <div class="ds-item">
@@ -1456,7 +1459,6 @@
 
     <div class="card">
     <div class="card-header">
-        <div class="card-icon">📊</div>
         <div class="card-title">¿Qué muestra este modelo estrella?</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -1582,7 +1584,6 @@
                 <div class="screenshot-slot has-img" id="ss-silhouette">
                     <img src="static/img/silhouette.png" alt="Silhouette Plot Orange">
                     <div class="ss-placeholder">
-                        <div class="ss-icon">📊</div>
                         <div class="ss-title">Silhouette Plot — Orange</div>
                         <div class="ss-desc">Captura del widget <strong>Silhouette Plot</strong> mostrando la distribución de cohesión de los 5 clusters sobre los 4,913 registros de precipitación muestreados.</div>
                         <div class="ss-tag">Nodo: Silhouette Plot → k-Means</div>
@@ -2103,20 +2104,988 @@
         </div><!-- /oculto -->
 
         <div id="profundo" class="section">
+            {% if clustering_data and clustering_data.exito %}
+                
+                <!-- STATS ROW -->
+                <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ clustering_data.mejor_k }}</div>
+                        <div class="stat-label">K Óptimo (K-Means)</div>
+                        <div class="stat-desc">Clusters identificados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:var(--teal)">{{ "%.4f"|format(clustering_data.mejor_silhouette) }}</div>
+                        <div class="stat-label">Silhouette Score</div>
+                        <div class="stat-desc">Calidad del clustering</div>
+                    </div>
+                    {% if clustering_data.dbscan %}
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#a78bfa">{{ clustering_data.dbscan.n_clusters }}</div>
+                        <div class="stat-label">Clusters DBSCAN</div>
+                        <div class="stat-desc">{{ clustering_data.dbscan.n_noise }} puntos ruido</div>
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.anomalias %}
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#fb7185">{{ clustering_data.anomalias.isolation_forest.n_anomalias }}</div>
+                        <div class="stat-label">Anomalías (IF)</div>
+                        <div class="stat-desc">{{ clustering_data.anomalias.isolation_forest.pct }}% del total</div>
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.pca %}
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:#34d399">{{ clustering_data.pca.componentes_80pct }}</div>
+                        <div class="stat-label">Componentes PCA</div>
+                        <div class="stat-desc">Explican ≥80% varianza</div>
+                    </div>
+                    {% endif %}
+                    <div class="stat-card">
+                        <div class="stat-value" style="color:var(--gold)">{{ clustering_data.tiempo_procesamiento }}s</div>
+                        <div class="stat-label">Tiempo Total</div>
+                        <div class="stat-desc">Pipeline completo Spark</div>
+                    </div>
+                </div>
+
+                <!-- INTRODUCCIÓN -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Conocimiento Profundo — Clustering K-Means con Apache Spark</div>
+                    </div>
+                    <p class="intro-text">
+                        Esta sección presenta los resultados del análisis de <strong>clustering K-Means con Apache Spark MLlib</strong> sobre las Normales Climatológicas de Colombia. El pipeline procesa <strong style="color:var(--accent3)">{{ clustering_data.num_registros|default(0) }} registros</strong> leídos directamente del archivo Excel del IDEAM, y los agrupa automáticamente según patrones de precipitación, altitud y ubicación geográfica, sin supervisión previa.
+                    </p>
+                    <hr class="divider">
+                    <p class="intro-text">
+                        Se entrenaron <strong>7 modelos K-Means</strong> con k=2..8 usando <strong style="color:var(--teal)">{{ clustering_data.motor|default('Apache Spark') }}</strong>. Para cada modelo se calculó el <strong style="color:var(--accent3)">Silhouette Score</strong> (mide cohesión vs separación de clusters, rango -1 a 1) y la <strong style="color:var(--teal)">Inertia / WSSSE</strong> (suma de cuadrados dentro de los clusters). El modelo con mayor Silhouette se considera óptimo.
+                    </p>
+                    <div class="periods-row">
+                        <span class="period-pill">Motor: {{ clustering_data.motor|default('Apache Spark') }}</span>
+                        <span class="period-pill">Fuente: archivo Excel (IDEAM)</span>
+                        <span class="period-pill">Features: {{ clustering_data.features_usadas|default([])|join(', ') }}</span>
+                    </div>
+                </div>
+
+                <!-- BENCHMARK DE CONFIGURACIONES -->
+                {% if clustering_data.benchmark %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Comparación de Rendimiento — 3 Configuraciones de Spark</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Se ejecutó la misma operación (carga de datos + consulta de agrupación distribuida) con tres configuraciones distintas de Spark para medir el impacto del paralelismo. Menor tiempo = mejor rendimiento.
+                    </p>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Configuración</th>
+                                    <th>Descripción</th>
+                                    <th style="text-align:right">Tiempo (s)</th>
+                                    <th style="text-align:right">Velocidad relativa</th>
+                                    <th style="min-width:140px">Barra</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set max_t = clustering_data.benchmark | map(attribute='tiempo_s') | max %}
+                                {% set min_t = clustering_data.benchmark | map(attribute='tiempo_s') | min %}
+                                {% for b in clustering_data.benchmark %}
+                                {% set pct = (b.tiempo_s / max_t * 100) | round(1) %}
+                                {% set es_mejor = (b.tiempo_s == min_t) %}
+                                <tr {% if es_mejor %}style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)"{% endif %}>
+                                    <td class="tech-name" style="font-family:monospace">{{ b.master }}</td>
+                                    <td style="color:var(--text2)">{{ b.descripcion }}</td>
+                                    <td style="text-align:right">
+                                        <span {% if es_mejor %}style="color:var(--accent);font-weight:700"{% endif %}>
+                                            {{ b.tiempo_s }}s
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right;color:var(--teal)">
+                                        {{ (max_t / b.tiempo_s) | round(2) }}×
+                                    </td>
+                                    <td>
+                                        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                                            <div style="width:{{ pct }}%;height:100%;background:{% if es_mejor %}var(--accent){% else %}rgba(56,189,248,0.35){% endif %};border-radius:4px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="font-size:12px;color:var(--text3)">
+                        La configuración resaltada es la más rápida. <strong>local[1]</strong> = 1 hilo (solo master); <strong>local[2]</strong> = 2 hilos (master + 1 worker); <strong>local[*]</strong> = todos los núcleos disponibles del equipo.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- TABLA DE MÉTRICAS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Comparativa de Modelos por K</div>
+                    </div>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>K (Clusters)</th>
+                                    <th style="text-align:right">Silhouette Score</th>
+                                    <th style="text-align:right">Inertia (WCSS)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for metrica in clustering_data.tabla_metricas %}
+                                <tr {% if metrica.k == clustering_data.mejor_k %}style="background:rgba(56,189,248,0.08); border-left:3px solid var(--accent)"{% endif %}>
+                                    <td class="tech-name">{{ metrica.k }}</td>
+                                    <td style="text-align:right">
+                                        <span {% if metrica.k == clustering_data.mejor_k %}style="color:var(--accent); font-weight:700"{% endif %}>
+                                            {{ metrica.silhouette }}
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">{{ metrica.inertia }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="font-size:12px;color:var(--text3);margin-top:10px">
+                        El modelo resaltado en azul es el óptimo (mayor Silhouette Score). La métrica Inertia representa la suma de cuadrados de distancias dentro de cada cluster (menor es mejor).
+                    </p>
+                </div>
+
+                <!-- INFORMACIÓN DE CLUSTERS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Distribución de Registros por Cluster</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-top:14px">
+                        {% for cluster_name, count in clustering_data.cluster_info.items() %}
+                        <div class="ds-item">
+                            <div class="ds-label">{{ cluster_name }}</div>
+                            <div class="ds-value" style="font-size:16px;color:var(--accent3)">{{ count }} registros</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ESTADÍSTICAS POR CLUSTER -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Estadísticas de Precipitación por Cluster</div>
+                    </div>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Cluster</th>
+                                    <th style="text-align:right">Num. Registros</th>
+                                    <th style="text-align:right">Promedio Precipitación (mm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in clustering_data.cluster_stats %}
+                                <tr>
+                                    <td class="tech-name">Cluster {{ stat.cluster }}</td>
+                                    <td style="text-align:right">{{ stat.registros }}</td>
+                                    <td style="text-align:right;color:var(--teal)">{{ stat.promedio_mm }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CONSULTAS ANALÍTICAS CON SPARK -->
+                {% if clustering_data.analiticas %}
+                {% set an = clustering_data.analiticas %}
+
+                {% if an.indicadores_globales %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Indicadores Globales — Spark SQL</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Calculados con <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">pyspark.sql.functions</code> sobre el Spark DataFrame completo ({{ an.indicadores_globales.total_registros | default(0) }} registros).
+                    </p>
+                    <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:20px">{{ an.indicadores_globales.prom_anual }}</div>
+                            <div class="stat-label">Precip. Promedio</div>
+                            <div class="stat-desc">mm/año (media nacional)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:20px;color:var(--teal)">{{ an.indicadores_globales.desv_anual }}</div>
+                            <div class="stat-label">Desviación Estándar</div>
+                            <div class="stat-desc">mm/año (variabilidad)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:20px;color:var(--gold)">{{ an.indicadores_globales.min_anual }}</div>
+                            <div class="stat-label">Mínimo</div>
+                            <div class="stat-desc">mm/año</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:20px;color:var(--accent3)">{{ an.indicadores_globales.max_anual }}</div>
+                            <div class="stat-label">Máximo</div>
+                            <div class="stat-desc">mm/año</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:20px;color:#a78bfa">{{ an.indicadores_globales.altitud_prom }}</div>
+                            <div class="stat-label">Altitud Promedio</div>
+                            <div class="stat-desc">m.s.n.m.</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if an.zonas_altitudinales %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Agrupación por Zona Altitudinal — Spark groupBy</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Clasificación distribuida de estaciones en 5 pisos térmicos colombianos usando <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">F.when / F.groupBy / F.agg</code> sobre Spark DataFrame.
+                    </p>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Zona Altitudinal</th>
+                                    <th style="text-align:right">Estaciones</th>
+                                    <th style="text-align:right">Precip. Promedio (mm/año)</th>
+                                    <th style="min-width:120px">Barra relativa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set max_p = an.zonas_altitudinales | map(attribute='prom_precip') | max %}
+                                {% for z in an.zonas_altitudinales %}
+                                {% set pct = (z.prom_precip / max_p * 100) | round(1) %}
+                                <tr>
+                                    <td class="tech-name">{{ z.zona }}</td>
+                                    <td style="text-align:right;color:var(--text2)">{{ z.registros }}</td>
+                                    <td style="text-align:right;color:var(--teal)">{{ z.prom_precip }}</td>
+                                    <td>
+                                        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                                            <div style="width:{{ pct }}%;height:100%;background:var(--teal);border-radius:4px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if an.top_departamentos %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Top 10 Departamentos por Precipitación — Spark SQL</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Calculado con <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">groupBy(DEPARTAMENTO).agg(avg, max).orderBy(desc)</code> directamente sobre Spark DataFrame.
+                    </p>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Departamento</th>
+                                    <th style="text-align:right">Estaciones</th>
+                                    <th style="text-align:right">Precip. Promedio (mm)</th>
+                                    <th style="text-align:right">Precip. Máxima (mm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in an.top_departamentos %}
+                                <tr>
+                                    <td style="color:var(--text3)">{{ loop.index }}</td>
+                                    <td class="tech-name">{{ d.departamento }}</td>
+                                    <td style="text-align:right;color:var(--text2)">{{ d.estaciones }}</td>
+                                    <td style="text-align:right;color:var(--accent3)">{{ d.prom_precip }}</td>
+                                    <td style="text-align:right;color:var(--teal)">{{ d.max_precip }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% endif %}{# /analiticas #}
+
+                <!-- METODOLOGÍA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Metodología</div>
+                    </div>
+                    <div class="section-number">1 · Carga y procesamiento con Apache Spark</div>
+                    <p class="body-text">
+                        Los datos se leyeron directamente del archivo <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">{{ clustering_data.archivo_fuente|default('Normales_Climatológicas_de_Colombia.xlsx') }}</code> (Normales Climatológicas del IDEAM). pandas carga el Excel y lo entrega a Spark vía CSV intermedio. Sobre el Spark DataFrame se aplica <strong>VectorAssembler</strong> para construir el vector de features con 4 columnas (<strong>ALTITUD_m</strong>, <strong>LATITUD</strong>, <strong>LONGITUD</strong>, <strong>ANUAL</strong>) y luego <strong>StandardScaler</strong> (withMean=true, withStd=true) para normalizar a media 0 y desviación 1.
+                    </p>
+                    <hr class="divider">
+                    <div class="section-number">2 · Entrenamiento de modelos con Spark MLlib</div>
+                    <p class="body-text">
+                        Se entrenaron 7 modelos K-Means independientes con k=2..8 usando <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">pyspark.ml.clustering.KMeans</code>. Cada modelo se inicializó con <strong>K-Means||</strong> (variante paralela de K-Means++ optimizada para Spark), <strong>maxIter=100</strong> y semilla fija <strong>seed=42</strong> para reproducibilidad. El entrenamiento se ejecuta de forma distribuida sobre los executors locales (master=<code style="background:var(--bg3);padding:2px 6px;border-radius:4px">local[*]</code>).
+                    </p>
+                    <hr class="divider">
+                    <div class="section-number">3 · Evaluación de métricas</div>
+                    <p class="body-text">
+                        La calidad de cada modelo se evaluó con <strong>pyspark.ml.evaluation.ClusteringEvaluator</strong> usando la métrica <strong style="color:var(--accent3)">Silhouette</strong> (distancia euclidiana al cuadrado, rango -1 a 1, mayor es mejor). Adicionalmente se reporta la <strong style="color:var(--teal)">Inertia / WSSSE</strong> (Within Set Sum of Squared Errors, obtenida de <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">model.summary.trainingCost</code>), que decrece con k formando la curva del codo. El k óptimo se seleccionó maximizando el Silhouette.
+                    </p>
+                </div>
+
+                <!-- GRÁFICAS DEL CLUSTERING -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Visualización de Métricas</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px">
+                        <div>
+                            <div class="section-number" style="margin-bottom:8px">Silhouette Score por k</div>
+                            <div style="height:260px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+                                <canvas id="chart-silhouette-k"></canvas>
+                            </div>
+                            <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">El pico marca el k óptimo (mejor cohesión-separación).</p>
+                        </div>
+                        <div>
+                            <div class="section-number" style="margin-bottom:8px">Curva del codo — Inertia por k</div>
+                            <div style="height:260px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+                                <canvas id="chart-inertia-k"></canvas>
+                            </div>
+                            <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">Donde la curva "se dobla" se sugiere el k natural.</p>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="section-number" style="margin-bottom:8px">Distribución de registros y precipitación promedio por cluster</div>
+                    <div style="height:300px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+                        <canvas id="chart-cluster-stats"></canvas>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════
+                     ANÁLISIS EXPLORATORIO (EDA)
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.eda and clustering_data.eda.estadisticas %}
+                {% set eda = clustering_data.eda %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Análisis Exploratorio Multivariado (EDA)</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Estadísticas descriptivas avanzadas sobre las <strong>{{ eda.n_features }}</strong> features de clustering.
+                        Se detectaron <strong style="color:var(--gold)">{{ eda.n_outliers_iqr }}</strong> valores extremos (método IQR).
+                    </p>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
+                        <table class="tech-table">
+                            <thead><tr>
+                                <th>Feature</th><th style="text-align:right">Media</th><th style="text-align:right">Std</th>
+                                <th style="text-align:right">Min</th><th style="text-align:right">Mediana</th><th style="text-align:right">Max</th>
+                                <th style="text-align:right">Sesgo</th><th style="text-align:right">Curtosis</th>
+                            </tr></thead>
+                            <tbody>
+                            {% for stat in eda.estadisticas %}
+                            <tr>
+                                <td class="tech-name">{{ stat.feature }}</td>
+                                <td style="text-align:right">{{ stat.mean }}</td>
+                                <td style="text-align:right">{{ stat.std }}</td>
+                                <td style="text-align:right">{{ stat.min }}</td>
+                                <td style="text-align:right">{{ stat.median }}</td>
+                                <td style="text-align:right">{{ stat.max }}</td>
+                                <td style="text-align:right;color:{% if stat.skewness|abs > 1 %}var(--gold){% else %}var(--text){% endif %}">{{ stat.skewness }}</td>
+                                <td style="text-align:right">{{ stat.kurtosis }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if eda.top_correlaciones %}
+                    <div class="section-number">Correlaciones Más Fuertes (|r| > 0.3)</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+                        {% for corr in eda.top_correlaciones %}
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">{{ corr.feat1 }} ↔ {{ corr.feat2 }}</div>
+                            <div class="ds-value" style="font-size:15px;color:{% if corr.correlation > 0 %}var(--teal){% else %}var(--gold){% endif %}">
+                                r = {{ corr.correlation }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     PCA — REDUCCIÓN DIMENSIONAL
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.pca %}
+                {% set pca = clustering_data.pca %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">PCA — Reducción de Dimensionalidad</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        El Análisis de Componentes Principales reduce las <strong>{{ clustering_data.features_usadas|length }}</strong> features originales
+                        a un espacio de menor dimensión preservando la máxima varianza.
+                        Se necesitan <strong style="color:var(--teal)">{{ pca.componentes_80pct }} componentes</strong>
+                        para explicar el ≥80% de la varianza total.
+                    </p>
+                    <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-bottom:16px">
+                        {% for i in range([pca.varianza_explicada|length, 6]|min) %}
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">{{ "%.1f"|format(pca.varianza_acumulada[i]*100) }}%</div>
+                            <div class="stat-label">PC1..PC{{ i+1 }}</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if pca.loadings %}
+                    <div class="section-number" style="margin-bottom:10px">Variables Más Importantes por Componente</div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+                        {% for comp in pca.loadings %}
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:8px">
+                                {{ comp.PC }} <span style="color:var(--text3);font-weight:400">({{ comp.varianza_pct }}% varianza)</span>
+                            </div>
+                            {% for f in comp.top_features %}
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>{{ f.feature }}</span>
+                                <span style="color:{% if f.loading > 0 %}var(--teal){% else %}var(--gold){% endif %}">{{ f.loading }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.graficos.pca %}
+                    <hr class="divider">
+                    <div class="section-number" style="margin-bottom:8px">Visualización PCA</div>
+                    <img src="/static/img/spark_pca.png" alt="PCA Scatter" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
+                        Izquierda: scree plot con varianza acumulada. Derecha: clusters proyectados en PC1-PC2.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     DBSCAN — CLUSTERING POR DENSIDAD
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.dbscan %}
+                {% set db = clustering_data.dbscan %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">DBSCAN — Clustering Basado en Densidad</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        DBSCAN (Density-Based Spatial Clustering of Applications with Noise) agrupa puntos por densidad sin necesitar especificar k.
+                        El parámetro <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">eps</code> fue auto-calibrado
+                        usando el percentil 90 de las distancias k-NN (k=5).
+                    </p>
+                    <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:14px">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:#a78bfa">{{ db.n_clusters }}</div>
+                            <div class="stat-label">Clusters</div>
+                            <div class="stat-desc">Detectados automáticamente</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:#fb7185">{{ db.n_noise }}</div>
+                            <div class="stat-label">Puntos Ruido</div>
+                            <div class="stat-desc">{{ db.pct_noise }}% del dataset</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--teal)">{{ db.silhouette }}</div>
+                            <div class="stat-label">Silhouette</div>
+                            <div class="stat-desc">Calidad (excl. ruido)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--accent3)">{{ db.eps }}</div>
+                            <div class="stat-label">eps</div>
+                            <div class="stat-desc">minPts = {{ db.min_samples }}</div>
+                        </div>
+                    </div>
+                    {% if db.cluster_counts %}
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+                        {% for name, count in db.cluster_counts.items() %}
+                        <div class="period-pill" style="{% if 'Ruido' in name %}background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fb7185{% endif %}">
+                            {{ name }}: {{ count }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.graficos.dbscan %}
+                    <img src="/static/img/spark_dbscan.png" alt="DBSCAN" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
+                        Clusters proyectados en espacio PCA. Puntos rojos (×) = ruido detectado automáticamente.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     CLUSTERING JERÁRQUICO + DENDROGRAMA
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.jerarquico %}
+                {% set hier = clustering_data.jerarquico %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Clustering Jerárquico — Ward Linkage</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        El clustering aglomerativo construye un árbol jerárquico (dendrograma) fusionando progresivamente los clusters más cercanos.
+                        Linkage <strong>Ward</strong> minimiza la varianza intra-cluster en cada fusión.
+                        El dendrograma se generó sobre una muestra de <strong>{{ hier.n_muestra }}</strong> estaciones.
+                    </p>
+                    <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:14px">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:#a78bfa">{{ hier.n_clusters }}</div>
+                            <div class="stat-label">Clusters</div>
+                            <div class="stat-desc">Linkage Ward</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--teal)">{{ hier.silhouette }}</div>
+                            <div class="stat-label">Silhouette</div>
+                            <div class="stat-desc">Dataset completo</div>
+                        </div>
+                    </div>
+                    {% if hier.cluster_counts %}
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+                        {% for name, count in hier.cluster_counts.items() %}
+                        <div class="period-pill">{{ name }}: {{ count }} estaciones</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.graficos.dendrograma %}
+                    <img src="/static/img/spark_dendrograma.png" alt="Dendrograma" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
+                        La línea amarilla marca el corte para k={{ hier.n_clusters }} clusters. Cada hoja representa una estación o grupo de estaciones.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     DETECCIÓN DE ANOMALÍAS
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.anomalias %}
+                {% set anom = clustering_data.anomalias %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Detección de Anomalías — Isolation Forest + LOF</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Se aplicaron dos métodos complementarios para identificar estaciones con comportamiento climático inusual.
+                        <strong style="color:#fb7185">{{ anom.detectadas_por_ambos }}</strong> estaciones fueron marcadas como anómalas por <em>ambos</em> métodos ({{ anom.pct_ambos }}%), lo que aumenta la confianza en el hallazgo.
+                    </p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
+                            <div style="font-weight:600;color:var(--accent);margin-bottom:8px">Isolation Forest</div>
+                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">{{ anom.isolation_forest.n_anomalias }}</div>
+                            <div style="color:var(--text2);font-size:12px">anomalías detectadas ({{ anom.isolation_forest.pct }}%)</div>
+                            <div style="color:var(--text3);font-size:11px;margin-top:6px">Contamination: {{ anom.isolation_forest.contamination }}</div>
+                            <div style="color:var(--text3);font-size:11px">Aísla puntos anómalos con árboles aleatorios</div>
+                        </div>
+                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
+                            <div style="font-weight:600;color:var(--teal);margin-bottom:8px">Local Outlier Factor (LOF)</div>
+                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">{{ anom.lof.n_anomalias }}</div>
+                            <div style="color:var(--text2);font-size:12px">anomalías detectadas ({{ anom.lof.pct }}%)</div>
+                            <div style="color:var(--text3);font-size:11px;margin-top:6px">k-vecinos: {{ anom.lof.n_neighbors }}</div>
+                            <div style="color:var(--text3);font-size:11px">Densidad local vs. vecindario</div>
+                        </div>
+                    </div>
+                    {% if clustering_data.graficos.anomalias %}
+                    <img src="/static/img/spark_anomalias.png" alt="Anomalías" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
+                        Histogramas de scores. Rojo = anomalías detectadas. IF usa score negativo (más negativo = más anómalo). LOF usa Negative Outlier Factor.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     MODELO PREDICTIVO — RANDOM FOREST
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.random_forest %}
+                {% set rf = clustering_data.random_forest %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Modelo Predictivo — Random Forest</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Se entrenó un Random Forest ({{ rf.n_estimators }} árboles) para predecir la pertenencia a clusters K-Means a partir de las features originales.
+                        Esto valida que los clusters son <em>estadísticamente distinguibles</em> y revela qué variables los definen.
+                        El entrenamiento excluye las anomalías detectadas por Isolation Forest para mayor robustez.
+                    </p>
+                    <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:14px">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--teal)">{{ "%.2f"|format(rf.accuracy*100) }}%</div>
+                            <div class="stat-label">Accuracy</div>
+                            <div class="stat-desc">Clasificación correcta</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--accent3)">{{ "%.4f"|format(rf.f1_score) }}</div>
+                            <div class="stat-label">F1-Score Macro</div>
+                            <div class="stat-desc">Balance precision/recall</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:var(--gold)">{{ "%.4f"|format(rf.cv_mean) }}</div>
+                            <div class="stat-label">CV F1 (5-fold)</div>
+                            <div class="stat-desc">±{{ "%.4f"|format(rf.cv_std) }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color:#a78bfa">{{ rf.top_feature }}</div>
+                            <div class="stat-label">Feature Principal</div>
+                            <div class="stat-desc">Mayor importancia Gini</div>
+                        </div>
+                    </div>
+                    {% if rf.feature_importance %}
+                    <div class="section-number" style="margin-bottom:8px">Importancia de Features (Gini)</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+                        {% set max_imp = rf.feature_importance[0].importance %}
+                        {% for fi in rf.feature_importance[:10] %}
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">{{ fi.feature }}</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:{{ (fi.importance/max_imp*100)|round(1) }}%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">{{ fi.importance }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if clustering_data.graficos.feature_importance %}
+                    <img src="/static/img/spark_rf_importance.png" alt="Feature Importance" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     PERFILES DE CLUSTERS
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.perfiles %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Perfiles Detallados por Cluster</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Caracterización de cada cluster K-Means con estadísticas descriptivas y etiqueta climática interpretativa.
+                    </p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px">
+                        {% set cluster_colors = ['var(--accent)', 'var(--teal)', 'var(--gold)', '#a78bfa', '#fb7185', '#34d399'] %}
+                        {% for p in clustering_data.perfiles %}
+                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid {{ cluster_colors[loop.index0 % 6] }}">
+                            <div style="font-weight:700;color:{{ cluster_colors[loop.index0 % 6] }};font-size:14px;margin-bottom:6px">
+                                Cluster {{ p.cluster }}
+                            </div>
+                            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">{{ p.descripcion }}</div>
+                            <div style="font-size:12px;color:var(--text3);margin-bottom:4px">{{ p.registros }} estaciones</div>
+                            {% if p.mean_ANUAL is defined %}
+                            <div style="font-size:12px;color:var(--text2)">Precip. anual: <strong>{{ p.mean_ANUAL }} mm</strong></div>
+                            {% endif %}
+                            {% if p.mean_ALTITUD_m is defined %}
+                            <div style="font-size:12px;color:var(--text2)">Altitud media: <strong>{{ p.mean_ALTITUD_m }} m</strong></div>
+                            {% endif %}
+                            {% if p.n_anomalias > 0 %}
+                            <div style="font-size:11px;color:#fb7185;margin-top:6px">⚠ {{ p.n_anomalias }} anomalías en este cluster</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if clustering_data.graficos.cluster_profiles %}
+                    <hr class="divider">
+                    <img src="/static/img/spark_perfiles.png" alt="Perfiles Clusters" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
+                        Boxplot comparativo por feature. Cada columna muestra la distribución de valores dentro de cada cluster.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     COMPARATIVA DE MÉTODOS DE CLUSTERING
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.comparativa_clustering %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Comparativa de Métodos de Clustering</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:14px">
+                        Los tres algoritmos aplicados al mismo dataset permiten validar cruzadamente los hallazgos.
+                        La convergencia en número de clusters y Silhouette Score aumenta la confianza en la estructura de los datos.
+                    </p>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                        <table class="tech-table">
+                            <thead><tr>
+                                <th>Método</th><th>Tipo</th>
+                                <th style="text-align:right">Clusters</th>
+                                <th style="text-align:right">Silhouette</th>
+                                <th>Ventaja Principal</th>
+                            </tr></thead>
+                            <tbody>
+                            {% for m in clustering_data.comparativa_clustering %}
+                            {% set best_sil = clustering_data.comparativa_clustering | map(attribute='silhouette') | max %}
+                            <tr {% if m.silhouette == best_sil %}style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)"{% endif %}>
+                                <td class="tech-name">{{ m.metodo }}</td>
+                                <td><span class="tech-badge">{{ m.tipo }}</span></td>
+                                <td style="text-align:right;font-weight:600">{{ m.clusters }}</td>
+                                <td style="text-align:right;color:{% if m.silhouette == best_sil %}var(--accent){% else %}var(--text){% endif %};font-weight:{% if m.silhouette == best_sil %}700{% else %}400{% endif %}">
+                                    {{ "%.4f"|format(m.silhouette) }}
+                                    {% if m.silhouette == best_sil %} ★{% endif %}
+                                </td>
+                                <td style="color:var(--text2);font-size:12px">{{ m.ventaja }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- ═══════════════════════════════════════════════════════
+                     CURVA ELBOW + SILHOUETTE (imagen matplotlib)
+                ═══════════════════════════════════════════════════════ -->
+                {% if clustering_data.graficos.elbow %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Curva del Codo y Silhouette — Análisis Visual</div>
+                    </div>
+                    <img src="/static/img/spark_elbow.png" alt="Elbow Method" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center">
+                        Izquierda: la inercia decrece con k; el codo indica el k natural. Derecha: el pico de Silhouette marca el k óptimo.
+                    </p>
+                </div>
+                {% endif %}
+
+                <script type="application/json" id="profundo-data">
+                    {
+                        "tabla_metricas": {{ clustering_data.tabla_metricas | tojson }},
+                        "cluster_stats":  {{ clustering_data.cluster_stats  | tojson }},
+                        "mejor_k":        {{ clustering_data.mejor_k        | tojson }},
+                        "benchmark":      {{ clustering_data.benchmark      | default([]) | tojson }}
+                    }
+                </script>
+
+                <!-- CONCLUSIONES PROFUNDAS -->
+                <div class="card" style="border-top:2px solid var(--teal)">
+                    <div class="card-header">
+                        <div class="card-title">Conclusiones — Conocimiento Profundo Extraído</div>
+                    </div>
+                    <p class="body-text" style="margin-bottom:16px">
+                        El pipeline de análisis profundo aplicó <strong>3 algoritmos de clustering, PCA, 2 detectores de anomalías y Random Forest</strong>
+                        sobre las Normales Climatológicas de Colombia. Los hallazgos convergentes entre métodos independientes forman el conocimiento profundo del dataset.
+                    </p>
+                    <div class="obj-grid">
+                        <div class="obj-item">
+                            <div class="obj-num">01</div>
+                            <div class="obj-text">
+                                <strong style="color:var(--accent)">Estructura natural del dataset:</strong>
+                                K-Means identificó <strong>{{ clustering_data.mejor_k }} clusters</strong> óptimos (Silhouette={{ "%.4f"|format(clustering_data.mejor_silhouette) }}).
+                                El clustering jerárquico y DBSCAN
+                                {% if clustering_data.jerarquico %}(Silhouette={{ clustering_data.jerarquico.silhouette }}){% endif %}
+                                confirman esta estructura, validando que los grupos son estadísticamente robustos.
+                            </div>
+                        </div>
+                        <div class="obj-item">
+                            <div class="obj-num">02</div>
+                            <div class="obj-text">
+                                <strong style="color:var(--teal)">Variables definidoras de clusters:</strong>
+                                El Random Forest
+                                {% if clustering_data.random_forest %}(Accuracy={{ "%.1f"|format(clustering_data.random_forest.accuracy*100) }}%, CV-F1={{ clustering_data.random_forest.cv_mean }}){% endif %}
+                                revela que <strong>{{ clustering_data.random_forest.top_feature if clustering_data.random_forest else 'ALTITUD_m' }}</strong>
+                                es la variable con mayor poder discriminante entre clusters climáticos.
+                            </div>
+                        </div>
+                        <div class="obj-item">
+                            <div class="obj-num">03</div>
+                            <div class="obj-text">
+                                <strong style="color:var(--gold)">Anomalías climáticas:</strong>
+                                {% if clustering_data.anomalias %}
+                                Se identificaron <strong>{{ clustering_data.anomalias.detectadas_por_ambos }}</strong> estaciones anómalas confirmadas por Isolation Forest y LOF simultáneamente.
+                                Estas representan estaciones con comportamiento climático atípico que merecen revisión individual.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="obj-item">
+                            <div class="obj-num">04</div>
+                            <div class="obj-text">
+                                <strong style="color:#a78bfa">Dimensionalidad intrínseca:</strong>
+                                {% if clustering_data.pca %}
+                                PCA revela que <strong>{{ clustering_data.pca.componentes_80pct }} componentes principales</strong>
+                                capturan ≥80% de la varianza de {{ clustering_data.features_usadas|length }} variables.
+                                Esto indica que la variabilidad climática de Colombia, aunque medida en múltiples variables, responde a pocos factores subyacentes (altitud, régimen estacional).
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="obj-item">
+                            <div class="obj-num">05</div>
+                            <div class="obj-text">
+                                <strong style="color:#fb7185">Clusters DBSCAN vs K-Means:</strong>
+                                {% if clustering_data.dbscan %}
+                                DBSCAN detectó <strong>{{ clustering_data.dbscan.n_noise }}</strong> estaciones como ruido ({{ clustering_data.dbscan.pct_noise }}%),
+                                estaciones que no pertenecen a ningún régimen climático bien definido.
+                                Su detección es imposible con K-Means clásico, siendo una ventaja clave del análisis basado en densidad.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="obj-item">
+                            <div class="obj-num">06</div>
+                            <div class="obj-text">
+                                <strong style="color:var(--accent3)">Procesamiento distribuido:</strong>
+                                {{ clustering_data.motor|default('Apache Spark') }} procesó <strong>{{ clustering_data.num_registros|default(0) }}</strong>
+                                registros en <strong>{{ clustering_data.tiempo_procesamiento }}s</strong>.
+                                El benchmark mostró la ventaja del paralelismo con múltiples workers (local[*]).
+                                Este pipeline es escalable a millones de registros sin cambiar el código.
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="section-number" style="margin-bottom:10px">Recomendaciones para Decisiones</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="color:var(--accent);font-weight:600;font-size:12px;margin-bottom:6px">Gestión Hídrica</div>
+                            <div style="color:var(--text2);font-size:12px">Los clusters de alta precipitación identifican zonas prioritarias para infraestructura de captación y control de crecientes.</div>
+                        </div>
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="color:var(--teal);font-weight:600;font-size:12px;margin-bottom:6px">Planificación Agrícola</div>
+                            <div style="color:var(--text2);font-size:12px">Los perfiles de clusters permiten recomendar cultivos específicos según el régimen pluviométrico de cada zona.</div>
+                        </div>
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="color:var(--gold);font-weight:600;font-size:12px;margin-bottom:6px">Control de Calidad de Datos</div>
+                            <div style="color:var(--text2);font-size:12px">Las anomalías detectadas deben revisarse manualmente: pueden ser errores de medición o fenómenos climáticos reales (microclimas).</div>
+                        </div>
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="color:#a78bfa;font-weight:600;font-size:12px;margin-bottom:6px">Monitoreo Climático</div>
+                            <div style="color:var(--text2);font-size:12px">El pipeline Spark puede ejecutarse periódicamente para detectar cambios en la estructura de clusters, señal de cambio climático.</div>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-title">Error en Clustering</div>
+                        <div class="empty-msg">
+                            {% if clustering_data %}
+                                {{ clustering_data.get('error', 'Error desconocido') }}
+                            {% else %}
+                                No se pudo completar el análisis de clustering. Verifica la consola para más detalles.
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- ════════════════════════════════════════
+             TABLA COMPARATIVA — 4 NIVELES
+             ════════════════════════════════════════ -->
+        <div id="comparativa" class="section">
             <div class="card">
-                <div class="empty-state">
-                    <div class="empty-icon">🧠</div>
-                    <div class="empty-title">Conocimiento Profundo</div>
-                    <div class="empty-msg">Este módulo está en construcción. El contenido será agregado próximamente.</div>
+                <div class="card-header">
+                    <div class="card-title" style="font-size:20px">Tabla Comparativa — Niveles de Conocimiento</div>
+                </div>
+                <p class="body-text" style="margin-bottom:18px">
+                    Comparación de los cuatro niveles de generación de conocimiento aplicados al dataset de Normales Climatológicas de Colombia (IDEAM, 1961–2020), según el marco de minería de datos del proyecto.
+                </p>
+            </div>
+
+            <!-- TABLA PRINCIPAL -->
+            <div class="card" style="padding:0;overflow:hidden">
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse;font-size:13px">
+                        <thead>
+                            <tr style="background:var(--bg3)">
+                                <th style="padding:14px 16px;text-align:left;color:var(--text3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);min-width:160px">Aspecto</th>
+                                <th style="padding:14px 16px;text-align:left;color:var(--accent);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);min-width:180px">Conocimiento Evidente</th>
+                                <th style="padding:14px 16px;text-align:left;color:var(--teal);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);min-width:180px">Conocimiento Multidimensional</th>
+                                <th style="padding:14px 16px;text-align:left;color:var(--gold);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);min-width:180px">Conocimiento Oculto</th>
+                                <th style="padding:14px 16px;text-align:left;color:#a78bfa;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);min-width:180px">Conocimiento Profundo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set rows = [
+                                ("Objetivo", "Describir y visualizar patrones climáticos evidentes en los datos brutos.", "Analizar el dato desde múltiples dimensiones (departamento, parámetro, período).", "Descubrir patrones no visibles: clusters, reglas de asociación y clasificación.", "Procesar grandes volúmenes de forma distribuida y aplicar ML a escala."),
+                                ("Técnica principal", "Estadística descriptiva, rankings, dashboards interactivos.", "Modelo estrella OLAP, consultas multidimensionales, drill-down.", "Clustering K-Means, reglas de asociación (Apriori), árbol de decisión.", "K-Means distribuido (Spark MLlib), Spark SQL, benchmark de configuraciones."),
+                                ("Herramienta", "Python · Flask · Power BI ", "SQL Server 2022 (modelo estrella) · pymssql · Jinja2", "Orange Data Mining 3.x", "Apache Spark 3.5 · PySpark · Spark MLlib"),
+                                ("Dataset utilizado", "10 471 registros × 24 columnas (Normales Climatológicas IDEAM).", "Modelo estrella cargado en SQL Server 2022 con 5 dimensiones.", "Subconjunto procesado en Orange (precipitación anual + altitud).", "10 471 registros procesados de forma distribuida en Spark."),
+                                ("Tipo de análisis", "Exploratorio, descriptivo.", "Multidimensional, comparativo.", "No supervisado / supervisado (patrones ocultos).", "Distribuido, escalable, con benchmarking de rendimiento."),
+                                ("Resultado principal", "Rankings por departamento, gráficos de precipitación y temperatura.", "Cubos OLAP, filtros por parámetro / departamento / período.", "5 clusters climáticos, reglas de asociación mes a mes, árbol de decisión.", "K óptimo (K=2, Silhouette≈0.69), indicadores por zona altitudinal, comparativa de tiempos."),
+                                ("Escalabilidad", "Media — depende de SQL Server y Python.", "Media — limitada al tamaño del modelo estrella.", "Baja — Orange procesa en memoria de un solo equipo.", "Alta — Spark escala horizontalmente con más workers."),
+                                ("Complejidad", "Baja · consultas SQL directas.", "Media · joins entre dimensiones y hechos.", "Media-Alta · algoritmos de ML no supervisado.", "Alta · pipeline distribuido con VectorAssembler + StandardScaler + KMeans||."),
+                                ("Integración Flask", "Dashboards en tiempo real con consultas al vuelo.", "Filtros dinámicos por dimensión desde la interfaz.", "Imágenes generadas por Orange embebidas en la app.", "Pipeline PySpark ejecutado al iniciar Flask, resultados cacheados."),
+                                ("Indicador de calidad", "Completitud de datos visualizados.", "Consistencia del modelo estrella (claves foráneas).", "Silhouette Score, confianza y soporte de reglas, accuracy del árbol.", "Silhouette Score (max 0.6910), Inertia (WSSSE), tiempos de benchmark."),
+                            ] %}
+                            {% for row in rows %}
+                            <tr style="{% if loop.index0 % 2 == 0 %}background:var(--bg2){% else %}background:var(--bg3){% endif %};border-bottom:1px solid var(--border)">
+                                <td style="padding:12px 16px;color:var(--text2);font-weight:600;font-size:12px;vertical-align:top">{{ row[0] }}</td>
+                                <td style="padding:12px 16px;color:var(--text);vertical-align:top">{{ row[1] }}</td>
+                                <td style="padding:12px 16px;color:var(--text);vertical-align:top">{{ row[2] }}</td>
+                                <td style="padding:12px 16px;color:var(--text);vertical-align:top">{{ row[3] }}</td>
+                                <td style="padding:12px 16px;color:var(--text);vertical-align:top">{{ row[4] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+
+            <!-- CONCLUSIONES GENERALES -->
+            <div class="card" style="border-top:2px solid var(--gold)">
+                <div class="card-header">
+                    <div class="card-title">Conclusiones del Proceso de Generación de Conocimiento</div>
+                </div>
+
+                <div class="section-number" style="margin-bottom:6px">Sobre el análisis con PySpark</div>
+                <p class="body-text">
+                    El procesamiento distribuido con Apache Spark demostró ser significativamente más eficiente conforme aumenta el paralelismo: la configuración <strong>local[*]</strong> (todos los núcleos) supera ampliamente a <strong>local[1]</strong> (nodo master solo) en el tiempo de carga y agregación del dataset. Spark MLlib permitió entrenar 7 variantes de K-Means de forma reproducible y evaluar objetivamente cada modelo con el <strong>Silhouette Score</strong>, identificando K=2 como la agrupación más natural (score de 0.6910), lo que indica dos grandes regímenes climáticos en Colombia: zonas de alta precipitación (tierras bajas tropicales) y zonas de precipitación moderada-baja (zonas andinas y áridas).
+                </p>
+
+                <hr class="divider">
+
+                <div class="section-number" style="margin-bottom:6px">Sobre el proceso completo de minería de datos</div>
+                <p class="body-text">
+                    El proyecto recorrió los cuatro niveles del espectro del conocimiento. El <strong>Conocimiento Evidente</strong> aportó una línea base descriptiva esencial para entender la distribución climática. El <strong>Conocimiento Multidimensional</strong> habilitó el análisis cruzado entre variables geográficas, climáticas y temporales mediante un modelo estrella robusto. El <strong>Conocimiento Oculto</strong>, mediante Orange Data Mining, reveló agrupaciones naturales y reglas de coocurrencia entre meses de lluvia que no son observables con estadística básica. Finalmente, el <strong>Conocimiento Profundo</strong> validó y amplió estos hallazgos a escala, con un pipeline reproducible y benchmarking cuantitativo del rendimiento distribuido.
+                </p>
+
+                <hr class="divider">
+
+                <div class="section-number" style="margin-bottom:6px">Hallazgos clave</div>
+                <div class="obj-grid">
+                    <div class="obj-item">
+                        <div class="obj-num">1</div>
+                        <div class="obj-text">Colombia presenta dos grandes regímenes de precipitación: zonas tropicales húmedas (Pacífico, Amazonia) con más de 3000 mm/año y zonas andinas y Caribe con valores entre 800 y 2000 mm/año.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">2</div>
+                        <div class="obj-text">La altitud es el predictor más potente del patrón de precipitación: las tierras bajas (&lt;500 m) concentran la mayor variabilidad pluviométrica.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">3</div>
+                        <div class="obj-text">El procesamiento distribuido con Spark escala de forma casi lineal al aumentar los workers, siendo &gt;2× más rápido con todos los núcleos respecto a un solo hilo.</div>
+                    </div>
+                    <div class="obj-item">
+                        <div class="obj-num">4</div>
+                        <div class="obj-text">La integración de los cuatro niveles en una sola aplicación Flask demuestra que es posible construir un sistema de inteligencia climática completo sobre datos abiertos del IDEAM.</div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /comparativa -->
 
     </div><!-- /page-content -->
 </div><!-- /main -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Auto-activar sección si viene de /clustering
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (document.body.innerHTML.includes('clustering_data')) {
+        const btn = document.querySelector('[onclick*="profundo"]');
+        if (btn) {
+            showSection('profundo', btn);
+            btn.classList.add('active');
+        }
+    }
+});
     function showSection(id, btn) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -2124,6 +3093,125 @@
         if (btn) btn.classList.add('active');
         if (id === 'multidimensional') iniciarGraficas();
         if (id === 'oculto') iniciarGraficasOculto();
+        if (id === 'profundo') iniciarGraficasProfundo();
+    }
+
+    let graficasProfundoIniciadas = false;
+    function iniciarGraficasProfundo() {
+        if (graficasProfundoIniciadas) return;
+        const dataEl = document.getElementById('profundo-data');
+        if (!dataEl) return;
+        let payload;
+        try { payload = JSON.parse(dataEl.textContent); } catch (e) { return; }
+        const tablaMetricas = payload.tabla_metricas || [];
+        const clusterStats  = payload.cluster_stats  || [];
+        const mejorK        = payload.mejor_k        || 0;
+        if (!tablaMetricas.length) return;
+        graficasProfundoIniciadas = true;
+
+        const ks = tablaMetricas.map(m => 'k=' + m.k);
+        const sils = tablaMetricas.map(m => m.silhouette);
+        const inertias = tablaMetricas.map(m => m.inertia);
+        const colorBest = '#38bdf8';
+        const colorOther = 'rgba(125,211,252,0.45)';
+        const bgSil = tablaMetricas.map(m => m.k === mejorK ? colorBest : colorOther);
+
+        new Chart(document.getElementById('chart-silhouette-k'), {
+            type: 'bar',
+            data: {
+                labels: ks,
+                datasets: [{
+                    label: 'Silhouette',
+                    data: sils,
+                    backgroundColor: bgSil,
+                    borderColor: bgSil,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: c => 'Silhouette: ' + c.raw.toFixed(4) } }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 1, ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' }, title: { display: true, text: 'Silhouette Score', color: '#5a7a9a' } },
+                    x: { ticks: { color: '#94afc8' }, grid: { display: false } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chart-inertia-k'), {
+            type: 'line',
+            data: {
+                labels: ks,
+                datasets: [{
+                    label: 'Inertia (WSSSE)',
+                    data: inertias,
+                    borderColor: '#2dd4bf',
+                    backgroundColor: 'rgba(45,212,191,0.15)',
+                    pointBackgroundColor: tablaMetricas.map(m => m.k === mejorK ? colorBest : '#2dd4bf'),
+                    pointRadius: tablaMetricas.map(m => m.k === mejorK ? 7 : 4),
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 1,
+                    tension: 0.25,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: c => 'Inertia: ' + Number(c.raw).toFixed(2) } }
+                },
+                scales: {
+                    y: { ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' }, title: { display: true, text: 'Inertia (WSSSE)', color: '#5a7a9a' } },
+                    x: { ticks: { color: '#94afc8' }, grid: { display: false } }
+                }
+            }
+        });
+
+        if (clusterStats.length) {
+            new Chart(document.getElementById('chart-cluster-stats'), {
+                type: 'bar',
+                data: {
+                    labels: clusterStats.map(c => 'Cluster ' + c.cluster),
+                    datasets: [
+                        {
+                            label: 'Registros',
+                            data: clusterStats.map(c => c.registros),
+                            backgroundColor: 'rgba(56,189,248,0.55)',
+                            borderColor: 'rgba(56,189,248,0.95)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Precipitación promedio (mm)',
+                            data: clusterStats.map(c => c.promedio_mm),
+                            backgroundColor: 'rgba(245,158,11,0.55)',
+                            borderColor: 'rgba(245,158,11,0.95)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94afc8', font: { size: 12 } } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y:  { position: 'left',  beginAtZero: true, ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' }, title: { display: true, text: 'Núm. registros', color: '#5a7a9a' } },
+                        y1: { position: 'right', beginAtZero: true, ticks: { color: '#f59e0b' }, grid: { display: false },                              title: { display: true, text: 'Precipitación (mm)', color: '#f59e0b' } },
+                        x:  { ticks: { color: '#94afc8' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
     }
 
     let graficasOcultoIniciadas = false;
