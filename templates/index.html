@@ -1276,30 +1276,30 @@
 
         </div><!-- /evidente -->
 
-
         <!-- ══════════════════════════════════
-             SECCIÓN 3: CONOCIMIENTO MulTIDIMENSIONAL
-             SECCIONES VACÍAS
+             SECCIÓN 3: CONOCIMIENTO MuLTIDIMENSIONAL
              ══════════════════════════════════ -->
-        <div id="multidimensional" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🔷</div>
-                    <div class="card-title">Conocimiento Multidimensional</div>
-                </div>
-            <p class="intro-text">
+       <div id="multidimensional" class="section">
+
+    <!-- INTRO -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">🔷</div>
+            <div class="card-title">Conocimiento Multidimensional</div>
+        </div>
+        <p class="intro-text">
             Esta sección presenta los resultados del análisis multidimensional sobre las <strong>Normales Climatológicas de Colombia</strong> a partir del modelo estrella implementado en SQL Server. Se realizaron consultas analíticas sobre las dimensiones de geografía, tiempo, período y parámetro climático, permitiendo identificar patrones de comportamiento climático a nivel departamental y por estación meteorológica.
-            </p>
+        </p>
         <br>
-            <p class="intro-text">
+        <p class="intro-text">
             El análisis se organiza en tres componentes: <strong>consultas analíticas fijas</strong> con visualizaciones de los principales parámetros climáticos, un <strong>explorador interactivo</strong> con filtros por parámetro, departamento y período, y una <strong>consola SQL libre</strong> que permite ejecutar consultas personalizadas directamente sobre el modelo estrella en la nube.
-            </p>
-            <hr class="divider">
-                <div class="obj-grid">
-                <div class="obj-item">
-                    <div class="obj-num">01</div>
-                    <div class="obj-text">Consultas analíticas fijas sobre precipitación, temperaturas y días de lluvia visualizadas en gráficas y tablas.</div>
-                </div>
+        </p>
+        <hr class="divider">
+        <div class="obj-grid">
+            <div class="obj-item">
+                <div class="obj-num">01</div>
+                <div class="obj-text">Consultas analíticas fijas sobre precipitación, temperaturas y días de lluvia visualizadas en gráficas y tablas.</div>
+            </div>
             <div class="obj-item">
                 <div class="obj-num">02</div>
                 <div class="obj-text">Explorador con filtros desplegables por parámetro climático, departamento y período de 30 años.</div>
@@ -1312,87 +1312,157 @@
                 <div class="obj-num">04</div>
                 <div class="obj-text">Datos conectados en tiempo real desde SQL Server en Somee con 5 dimensiones y una tabla de hechos climáticos.</div>
             </div>
-            </div>
-        </div>
-                <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌧</div>
-                    <div class="card-title">Precipitación promedio por departamento</div>
-                 </div>
-             <div style="overflow-y:scroll;height:400px;border-radius:10px;">
-             <div style="position:relative;height:900px;">
-                <canvas id="chart-precip"></canvas>
-             </div>
-            </div>
-        </div>
-
-         <div class="card">
-            <div class="card-header">
-                <div class="card-icon">🌡</div>
-                <div class="card-title">Temperatura media promedio por departamento</div>
-            </div>
-            <div style="overflow-y:scroll;height:400px;border-radius:10px;">
-            <div style="position:relative;height:900px;">
-                <canvas id="chart-temp"></canvas>
-            </div>
-            </div>
-        </div>
-
-        <div class="card">
-        <div class="card-header">
-            <div class="card-icon">🔆</div>
-            <div class="card-title">Temperatura máxima promedio por departamento</div>
-        </div>
-        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
-            <table class="tech-table">
-                <thead><tr><th>Departamento</th><th>Promedio (°C)</th></tr></thead>
-                <tbody>
-                    {% for row in temp_max_depto %}
-                    <tr>
-                        <td class="tech-name">{{ row.departamento }}</td>
-                        <td>{{ row.promedio }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 
+    <!-- MODELO ESTRELLA -->
     <div class="card">
         <div class="card-header">
-            <div class="card-icon">❄</div>
-            <div class="card-title">Temperatura mínima promedio por departamento</div>
+            <div class="card-icon">🗂</div>
+            <div class="card-title">Modelo Estrella — Diseño dimensional</div>
         </div>
-        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
-            <table class="tech-table">
-                <thead><tr><th>Departamento</th><th>Promedio (°C)</th></tr></thead>
-                <tbody>
-                    {% for row in temp_min_depto %}
-                    <tr>
-                        <td class="tech-name">{{ row.departamento }}</td>
-                        <td>{{ row.promedio }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <p class="intro-text">
+            El modelo estrella fue implementado en <strong>SQL Server</strong> con una tabla de hechos central (<strong>Hechos_Climaticos</strong>) conectada a 5 dimensiones: <strong>Dim_Geografia</strong> (departamento, municipio, coordenadas), <strong>Dim_Estacion</strong> (nombre, altitud, categoría), <strong>Dim_Tiempo</strong> (mes, número de mes), <strong>Dim_Periodo</strong> (rango de 30 años) y <strong>Dim_Parametro</strong> (tipo de variable climática y unidad de medida). Este diseño permite cruzar cualquier combinación de dimensiones para obtener conocimiento multidimensional real.
+        </p>
+        <div style="margin-top:16px;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+            <img src="/static/img/ModeloEstrella.png" alt="Modelo Estrella SQL Server" style="width:100%;display:block">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px">
+            <div class="ds-item">
+                <div class="ds-label">Tabla de hechos</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2)">Hechos_Climaticos · 14,716 registros · valor_medicion como métrica central</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Dimensiones</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2)">5 dimensiones · Geografia, Estacion, Tiempo, Periodo, Parametro</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Períodos históricos</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2)">4 períodos de 30 años · 1961–1990 · 1971–2000 · 1981–2010 · 1991–2020</div>
+            </div>
         </div>
     </div>
 
+   <!-- CONSULTA 1: Anual + Mensual lado a lado -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-icon">🌧</div>
+        <div class="card-title">Variación de precipitación — Amazonas vs Antioquía</div>
+    </div>
+    <p class="intro-text">
+        Cruce de 3 dimensiones: <strong>Geografía × Tiempo × Período</strong>. 
+        Izquierda: evolución histórica anual en los 4 períodos de 30 años. 
+        Derecha: patrón mensual del período más reciente (1991–2020).
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div>
+            <div class="section-number" style="margin-bottom:8px">Precipitación Anual — 4 Períodos</div>
+            <div style="height:320px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+                <canvas id="chart-precip-anual"></canvas>
+            </div>
+        </div>
+        <div>
+            <div class="section-number" style="margin-bottom:8px">Patrón Mensual — Período 1991–2020</div>
+            <div style="height:320px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
+                <canvas id="chart-precip-mensual"></canvas>
+            </div>
+        </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:10px">
+        Mostrando Amazonas y Antioquía. Para consultar otro departamento usa el explorador o la consola SQL.
+    </p>
+</div>
+
+    <!-- CONSULTA 2: Amplitud térmica — barras horizontal -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">🌡</div>
+            <div class="card-title">Amplitud térmica por estación y altitud</div>
+        </div>
+        <p class="intro-text">
+            Cruce de 3 dimensiones: <strong>Estación × Parámetro × Geografía</strong>. Muestra la diferencia entre temperatura máxima y mínima por estación, relacionada con su altitud.
+        </p>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:14px">
+            <div style="min-width:600px;height:420px;padding:12px;background:var(--bg3)">
+                <canvas id="chart-amplitud">
+                <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:12px;color:var(--text3)">
+    <span style="display:flex;align-items:center;gap:5px">
+        <span style="width:28px;height:4px;background:rgba(56,189,248,0.9);border-radius:2px;display:inline-block"></span> Rango (mín → máx)
+    </span>
+    <span style="display:flex;align-items:center;gap:5px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Amplitud °C
+    </span>
+    <span style="display:flex;align-items:center;gap:5px">
+        <span style="width:10px;height:10px;border-radius:2px;background:rgba(167,139,250,0.25);border:1px solid rgba(167,139,250,0.6);display:inline-block"></span> Altitud (m)
+    </span>
+</div>
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONSULTA 3: Índice combinado — barras agrupadas -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">📊</div>
+            <div class="card-title">Índice climático combinado por departamento</div>
+        </div>
+        <p class="intro-text">
+            Cruce de <strong>4 variables simultáneas</strong>: precipitación + temperatura media + días de lluvia + altitud media por departamento.
+        </p>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:14px">
+            <div style="min-width:700px;height:400px;padding:12px;background:var(--bg3)">
+                <canvas id="chart-indice"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONSULTA 4: Tendencia — líneas -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">📈</div>
+            <div class="card-title">Tendencia climática histórica por mes y período</div>
+        </div>
+        <p class="intro-text">
+            Cruce de 3 dimensiones: <strong>Período × Tiempo × Parámetro</strong>. Muestra cómo evolucionaron la precipitación y la temperatura media mes a mes a través de los 4 períodos históricos.
+        </p>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:14px">
+            <div style="min-width:600px;height:380px;padding:12px;background:var(--bg3)">
+                <canvas id="chart-tendencia"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONSULTA 5: Top lluviosos — tabla -->
     <div class="card">
         <div class="card-header">
             <div class="card-icon">📍</div>
-            <div class="card-title">Top 10 estaciones con más días de lluvia</div>
+            <div class="card-title">Top combinaciones departamento-mes más lluviosas por período</div>
         </div>
+        <p class="intro-text">
+            Cruce de 3 dimensiones: <strong>Geografía × Tiempo × Período</strong>. Identifica las combinaciones de departamento, mes y período con mayor precipitación histórica.
+        </p>
         <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
             <table class="tech-table">
-                <thead><tr><th>#</th><th>Estación</th><th>Departamento</th><th>Promedio (días)</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Departamento</th>
+                        <th>Mes</th>
+                        <th>Período</th>
+                        <th>Precip. promedio (mm)</th>
+                        <th>N° estaciones</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    {% for row in dias_lluvia_top %}
+                    {% for row in meses_lluviosos %}
                     <tr>
                         <td style="color:var(--text3)">{{ loop.index }}</td>
-                        <td class="tech-name">{{ row.estacion }}</td>
-                        <td style="color:var(--text2)">{{ row.departamento }}</td>
-                        <td>{{ row.promedio }}</td>
+                        <td class="tech-name">{{ row.departamento }}</td>
+                        <td style="color:var(--text2)">{{ row.nombre_mes }}</td>
+                        <td style="color:var(--text2)">{{ row.periodo }}</td>
+                        <td>{{ row.precipitacion_promedio }}</td>
+                        <td style="color:var(--text2)">{{ row.num_estaciones }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -1400,6 +1470,7 @@
         </div>
     </div>
 
+    <!-- EXPLORADOR CON FILTROS -->
     <div class="card">
         <div class="card-header">
             <div class="card-icon">🔎</div>
@@ -1410,7 +1481,7 @@
                 <div class="nav-label">Parámetro</div>
                 <select id="f-parametro" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
                     {% for p in parametros %}
-                    <option value="{{ p }}">{{ p }}</option>
+                    <option value="{{ p | e }}">{{ p | e }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1419,7 +1490,7 @@
                 <select id="f-departamento" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
                     <option value="">Todos</option>
                     {% for d in departamentos %}
-                    <option value="{{ d }}">{{ d }}</option>
+                    <option value="{{ d | e }}">{{ d | e }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1428,7 +1499,7 @@
                 <select id="f-periodo" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
                     <option value="">Todos</option>
                     {% for p in periodos %}
-                    <option value="{{ p }}">{{ p }}</option>
+                    <option value="{{ p | e }}">{{ p | e }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1439,57 +1510,119 @@
         <div id="filtro-resultado" style="margin-top:16px"></div>
     </div>
 
+    <!-- CONSOLA SQL -->
     <div class="card">
         <div class="card-header">
             <div class="card-icon">💻</div>
             <div class="card-title">Consola SQL libre</div>
         </div>
         <p class="body-text" style="margin-bottom:12px">Escribe cualquier consulta SELECT sobre el modelo estrella.</p>
-        <textarea id="sql-input" rows="5" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical">SELECT TOP 5 g.departamento, p.parametro, ROUND(AVG(h.valor_medicion), 2) as promedio
-            FROM Hechos_Climaticos h
-            JOIN Dim_Geografia g ON h.id_geo = g.id_geo
-            JOIN Dim_Parametro p ON h.id_parametro = p.id_parametro
-            GROUP BY g.departamento, p.parametro
-            ORDER BY promedio DESC</textarea>
+        <textarea id="sql-input" rows="5" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:monospace;resize:vertical">SELECT g.departamento, t.nombre_mes, per.periodo,
+       ROUND(AVG(CASE WHEN p.parametro='PRECIPITACIÓN' THEN h.valor_medicion END), 2) as precipitacion,
+       ROUND(AVG(CASE WHEN p.parametro='TEMPERATURA MEDIA' THEN h.valor_medicion END), 2) as temperatura,
+       ROUND(AVG(CASE WHEN p.parametro='No. DE DIAS CON LLUVIA' THEN h.valor_medicion END), 2) as dias_lluvia
+       FROM Hechos_Climaticos h
+       JOIN Dim_Geografia g ON h.id_geo = g.id_geo
+       JOIN Dim_Tiempo t ON h.id_tiempo = t.id_tiempo
+       JOIN Dim_Periodo per ON h.id_periodo = per.id_periodo
+       JOIN Dim_Parametro p ON h.id_parametro = p.id_parametro
+       WHERE p.parametro IN ('PRECIPITACIÓN','TEMPERATURA MEDIA','No. DE DIAS CON LLUVIA')
+       AND g.departamento = 'Antioquia'
+       GROUP BY g.departamento, t.nombre_mes, per.periodo
+       ORDER BY t.nombre_mes, per.periodo</textarea>
         <button onclick="ejecutarSQL()" style="margin-top:10px;padding:10px 24px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer">
             Ejecutar
         </button>
         <div id="sql-resultado" style="margin-top:16px"></div>
     </div>
 
-    <div class="card">
+    <!-- CONCLUSIONES MULTIDIMENSIONALES -->
+<div class="card">
     <div class="card-header">
-        <div class="card-title">¿Qué muestra este modelo estrella?</div>
+        <div class="card-icon">💡</div>
+        <div class="card-title">Conclusiones del análisis multidimensional</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <p class="intro-text">
+        Principales hallazgos obtenidos del cruce de las dimensiones <strong>Geografía × Tiempo × Período × Parámetro</strong> sobre las normales climatológicas de Colombia 1961–2020.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+
         <div class="ds-item">
-            <div class="ds-label">Consultas analíticas fijas</div>
+            <div class="ds-label">🌧 Patrones de precipitación regionales</div>
             <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
-                Precipitación promedio · Temperatura media · Temperatura máxima · Temperatura mínima · Top 10 estaciones con más días de lluvia
+                Amazonas supera los 3.000 mm anuales con un pico unimodal en abril–mayo, mientras Antioquia (~2.700 mm) muestra el patrón bimodal andino típico. La geografía define el régimen de lluvias más que cualquier otro factor.
             </div>
         </div>
+
         <div class="ds-item">
-            <div class="ds-label">Explorador interactivo</div>
+            <div class="ds-label">🌡 Altitud como factor térmico determinante</div>
             <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
-                Filtra por parámetro climático, departamento y período de análisis. Resultados en tabla dinámica en tiempo real.
+                Las estaciones de alta montaña (Tibaitata 2.543 m, Granja Providencia 2.820 m) presentan rangos fríos y estrechos de 4–20°C, mientras las de tierras bajas (Chiriguaná 30 m) alcanzan rangos de 20–36°C. A mayor altitud, menor temperatura y menor amplitud térmica.
             </div>
         </div>
+
         <div class="ds-item">
-            <div class="ds-label">Consola SQL libre</div>
+            <div class="ds-label">🗺 Dos grupos climáticos opuestos</div>
             <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
-                Ejecuta cualquier consulta SELECT sobre las tablas: Hechos_Climaticos, Dim_Geografia, Dim_Estacion, Dim_Parametro, Dim_Tiempo, Dim_Periodo.
+                Pacífico y Amazonia (Chocó, Vaupés, Amazonas) combinan alta precipitación con temperaturas moderadas (~25°C). Los departamentos caribeños (La Guajira, Atlántico) registran las temperaturas más altas (~29°C) pero la menor precipitación — relación inversa clara entre calor y lluvia.
             </div>
         </div>
+
         <div class="ds-item">
-            <div class="ds-label">Modelo estrella</div>
+            <div class="ds-label">📈 Incremento de precipitación en últimas décadas</div>
             <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
-                1 tabla de hechos · 5 dimensiones · 14,716 registros · 4 períodos de 30 años · Hospedado en SQL Server via Somee.
+                El período 1991–2020 muestra valores sistemáticamente más altos que 1961–1990 en casi todos los meses, con diferencias más notorias en mayo y octubre. El patrón bimodal nacional se mantiene estable, pero la intensidad de las lluvias ha aumentado gradualmente.
             </div>
         </div>
+
+        <div class="ds-item" style="grid-column:1 / -1">
+            <div class="ds-label">📍 Chocó lidera históricamente con posible desplazamiento estacional</div>
+            <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">
+                Chocó encabeza el ranking en todos los períodos con precipitaciones de hasta 655 mm en un solo mes, pero su pico lluvioso se desplazó de octubre (1961–1990) a agosto (1991–2020), sugiriendo un cambio estacional. Guainía y Meta aparecen consistentemente como segundo y tercer lugar, con Meta casi decuplicando sus estaciones de medición (5 → 46) lo que mejora la representatividad del dato.
+            </div>
+        </div>
+
     </div>
 </div>
 
-</div>
+    <!-- QUÉ MUESTRA ESTE MODELO -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">¿Qué muestra este modelo estrella?</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="ds-item">
+                <div class="ds-label">Variación precipitación (3 dims)</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">Departamento × Mes × Período — ¿Cambió el patrón de lluvias entre 1961 y 2020?</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Amplitud térmica (3 dims)</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">Estación × Altitud × Temperatura — ¿Qué estaciones tienen mayor contraste térmico?</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Índice combinado (4 variables)</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">Precipitación + Temperatura + Días de lluvia + Altitud por departamento simultáneamente.</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Tendencia histórica (3 dims)</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">Período × Mes × Parámetro — Evolución climática a lo largo de 4 períodos de 30 años.</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Explorador interactivo (4 dims)</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">Filtra por parámetro, departamento y período. Devuelve promedio, máximo, mínimo y número de estaciones por mes.</div>
+            </div>
+            <div class="ds-item">
+                <div class="ds-label">Modelo estrella</div>
+                <div class="ds-value" style="font-size:13px;color:var(--text2);line-height:1.8">1 tabla de hechos · 5 dimensiones · 14,716 registros · 4 períodos · SQL Server via Somee.</div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /multidimensional -->
+
+        <!-- ══════════════════════════════════
+             SECCIÓN 4: CONOCIMIENTO PROFUNDO
+             ══════════════════════════════════ -->
 
         <div id="oculto" class="section">
 
@@ -2094,7 +2227,7 @@
                 </div>
 
                 <!-- Imagen -->
-                <div class="screenshot-slot" id="ss-confusion">
+                <div class="screenshot-slot" id="ss-orange-flujo">
                     <img 
                         src="static/img/orange.png" 
                     >
@@ -3006,7 +3139,7 @@
                                 ("Objetivo", "Describir y visualizar patrones climáticos evidentes en los datos brutos.", "Analizar el dato desde múltiples dimensiones (departamento, parámetro, período).", "Descubrir patrones no visibles: clusters, reglas de asociación y clasificación.", "Procesar grandes volúmenes de forma distribuida y aplicar ML a escala."),
                                 ("Técnica principal", "Estadística descriptiva, rankings, dashboards interactivos.", "Modelo estrella OLAP, consultas multidimensionales, drill-down.", "Clustering K-Means, reglas de asociación (Apriori), árbol de decisión.", "K-Means distribuido (Spark MLlib), Spark SQL, benchmark de configuraciones."),
                                 ("Herramienta", "Python · Flask · Power BI ", "SQL Server 2022 (modelo estrella) · pymssql · Jinja2", "Orange Data Mining 3.x", "Apache Spark 3.5 · PySpark · Spark MLlib"),
-                                ("Dataset utilizado", "10 471 registros × 24 columnas (Normales Climatológicas IDEAM).", "Modelo estrella cargado en SQL Server 2022 con 5 dimensiones.", "Subconjunto procesado en Orange (precipitación anual + altitud).", "10 471 registros procesados de forma distribuida en Spark."),
+                                ("Dataset utilizado", "14 716 registros × 24 columnas (Normales Climatológicas IDEAM).", "Modelo estrella cargado en SQL Server 2022 con 5 dimensiones.", "Subconjunto procesado en Orange (precipitación anual + altitud).", " 14 716 registros procesados de forma distribuida en Spark."),
                                 ("Tipo de análisis", "Exploratorio, descriptivo.", "Multidimensional, comparativo.", "No supervisado / supervisado (patrones ocultos).", "Distribuido, escalable, con benchmarking de rendimiento."),
                                 ("Resultado principal", "Rankings por departamento, gráficos de precipitación y temperatura.", "Cubos OLAP, filtros por parámetro / departamento / período.", "5 clusters climáticos, reglas de asociación mes a mes, árbol de decisión.", "K óptimo (K=2, Silhouette≈0.69), indicadores por zona altitudinal, comparativa de tiempos."),
                                 ("Escalabilidad", "Media — depende de SQL Server y Python.", "Media — limitada al tamaño del modelo estrella.", "Baja — Orange procesa en memoria de un solo equipo.", "Alta — Spark escala horizontalmente con más workers."),
@@ -3073,12 +3206,12 @@
     </div><!-- /page-content -->
 </div><!-- /main -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script defer>
 // Auto-activar sección si viene de /clustering
 window.addEventListener('load', function() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (document.body.innerHTML.includes('clustering_data')) {
+    if (urlParams.get('seccion') === 'profundo') {
         const btn = document.querySelector('[onclick*="profundo"]');
         if (btn) {
             showSection('profundo', btn);
@@ -3087,27 +3220,31 @@ window.addEventListener('load', function() {
     }
 });
     function showSection(id, btn) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-        if (id === 'multidimensional') iniciarGraficas();
-        if (id === 'oculto') iniciarGraficasOculto();
-        if (id === 'profundo') iniciarGraficasProfundo();
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js aún no está disponible');
+        return;
     }
+    if (id === 'multidimensional') iniciarGraficas();
+    if (id === 'oculto') iniciarGraficasOculto();
+    if (id === 'profundo') iniciarGraficasProfundo();
+}
 
     let graficasProfundoIniciadas = false;
     function iniciarGraficasProfundo() {
-        if (graficasProfundoIniciadas) return;
-        const dataEl = document.getElementById('profundo-data');
-        if (!dataEl) return;
-        let payload;
-        try { payload = JSON.parse(dataEl.textContent); } catch (e) { return; }
-        const tablaMetricas = payload.tabla_metricas || [];
-        const clusterStats  = payload.cluster_stats  || [];
-        const mejorK        = payload.mejor_k        || 0;
-        if (!tablaMetricas.length) return;
-        graficasProfundoIniciadas = true;
+    if (graficasProfundoIniciadas) return;
+    graficasProfundoIniciadas = true;
+    const dataEl = document.getElementById('profundo-data');
+    if (!dataEl) { graficasProfundoIniciadas = false; return; }
+    let payload;
+    try { payload = JSON.parse(dataEl.textContent); } catch (e) { graficasProfundoIniciadas = false; return; }
+    const tablaMetricas = payload.tabla_metricas || [];
+    const clusterStats  = payload.cluster_stats  || [];
+    const mejorK        = payload.mejor_k        || 0;
+    if (!tablaMetricas.length) { graficasProfundoIniciadas = false; return; }
 
         const ks = tablaMetricas.map(m => 'k=' + m.k);
         const sils = tablaMetricas.map(m => m.silhouette);
@@ -3312,131 +3449,358 @@ window.addEventListener('load', function() {
     }
 
     let graficasIniciadas = false;
-    function iniciarGraficas() {
-        if (graficasIniciadas) return;
-        graficasIniciadas = true;
 
-        const precipData = {{ precip_depto | tojson }};
-        const tempData   = {{ temp_media_depto | tojson }};
+function renderTabla(datos, contenedorId) {
+    const contenedor = document.getElementById(contenedorId);
+    if (!datos.length) { contenedor.innerHTML = '<p style="color:var(--text3);font-size:13px">Sin resultados.</p>'; return; }
+    const cols = Object.keys(datos[0]);
+    let html = '<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:8px"><table class="tech-table"><thead><tr>';
+    cols.forEach(c => html += `<th>${c}</th>`);
+    html += '</tr></thead><tbody>';
+    datos.forEach(row => {
+        html += '<tr>';
+        cols.forEach(c => html += `<td>${row[c] ?? ''}</td>`);
+        html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    contenedor.innerHTML = html;
+}
 
-        new Chart(document.getElementById('chart-precip'), {
-            type: 'bar',
-            data: {
-                labels: precipData.map(r => r.departamento),
-                datasets: [{
-                    data: precipData.map(r => r.promedio),
-                    backgroundColor: 'rgba(56,189,248,0.5)',
-                    borderColor: 'rgba(56,189,248,0.9)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: c => ` ${c.raw} mm` } }
-                },
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Promedio (mm)', color: '#5a7a9a', font: { size: 12 } },
-                        ticks: { color: '#94afc8' },
-                        grid: { color: 'rgba(96,165,250,0.08)' }
-                    },
-                    y: {
-                        title: { display: true, text: 'Departamento', color: '#5a7a9a', font: { size: 12 } },
-                        ticks: { color: '#94afc8', font: { size: 11 } },
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-
-        new Chart(document.getElementById('chart-temp'), {
-            type: 'bar',
-            data: {
-                labels: tempData.map(r => r.departamento),
-                datasets: [{
-                    data: tempData.map(r => r.promedio),
-                    backgroundColor: 'rgba(45,212,191,0.5)',
-                    borderColor: 'rgba(45,212,191,0.9)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: c => ` ${c.raw} °C` } }
-                },
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Promedio (°C)', color: '#5a7a9a', font: { size: 12 } },
-                        ticks: { color: '#94afc8' },
-                        grid: { color: 'rgba(96,165,250,0.08)' }
-                    },
-                    y: {
-                        title: { display: true, text: 'Departamento', color: '#5a7a9a', font: { size: 12 } },
-                        ticks: { color: '#94afc8', font: { size: 11 } },
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    }
-
-    function renderTabla(datos, contenedorId) {
-        const contenedor = document.getElementById(contenedorId);
-        if (!datos.length) { contenedor.innerHTML = '<p style="color:var(--text3);font-size:13px">Sin resultados.</p>'; return; }
-        const cols = Object.keys(datos[0]);
-        let html = '<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:8px"><table class="tech-table"><thead><tr>';
-        cols.forEach(c => html += `<th>${c}</th>`);
-        html += '</tr></thead><tbody>';
-        datos.forEach(row => {
-            html += '<tr>';
-            cols.forEach(c => html += `<td>${row[c] ?? ''}</td>`);
-            html += '</tr>';
-        });
-        html += '</tbody></table></div>';
-        contenedor.innerHTML = html;
-    }
-
-    async function ejecutarFiltro() {
-        const body = {
-            parametro: document.getElementById('f-parametro').value,
-            departamento: document.getElementById('f-departamento').value,
-            periodo: document.getElementById('f-periodo').value
-        };
-        document.getElementById('filtro-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+async function ejecutarFiltro() {
+    const body = {
+        parametro: document.getElementById('f-parametro').value,
+        departamento: document.getElementById('f-departamento').value,
+        periodo: document.getElementById('f-periodo').value
+    };
+    document.getElementById('filtro-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+    try {
         const res = await fetch('/consulta_filtro', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(body)
         });
+        if (!res.ok) throw new Error('Error del servidor: ' + res.status);
         const datos = await res.json();
         renderTabla(datos, 'filtro-resultado');
+    } catch (err) {
+        document.getElementById('filtro-resultado').innerHTML = `<p style="color:#ef4444;font-size:13px">Error de conexión: ${err.message}</p>`;
     }
+}
 
-    async function ejecutarSQL() {
-        const sql = document.getElementById('sql-input').value;
-        document.getElementById('sql-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+async function ejecutarSQL() {
+    const sql = document.getElementById('sql-input').value;
+    document.getElementById('sql-resultado').innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando...</p>';
+    try {
         const res = await fetch('/consulta_libre', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({sql})
         });
+        if (!res.ok) throw new Error('Error del servidor: ' + res.status);
         const datos = await res.json();
         if (datos.error) {
-            document.getElementById('sql-resultado').innerHTML = `<p style="color:#ef4444;font-size:13px">Error: ${datos.error}</p>`;
+            document.getElementById('sql-resultado').innerHTML = `<p style="color:#ef4444;font-size:13px">Error SQL: ${datos.error}</p>`;
             return;
         }
         renderTabla(datos, 'sql-resultado');
+    } catch (err) {
+        document.getElementById('sql-resultado').innerHTML = `<p style="color:#ef4444;font-size:13px">Error de conexión: ${err.message}</p>`;
     }
+}
+
+
+function iniciarGraficas() {
+    if (graficasIniciadas) return;
+    graficasIniciadas = true;
+
+    let precipData = [];
+    let amplitudData = [];
+    let indiceData = [];
+    let tendenciaData = [];
+
+    precipData = {{ precip_por_mes_periodo | tojson | safe }};
+    amplitudData = {{ amplitud_termica | tojson | safe }};
+    indiceData = {{ indice_combinado | tojson | safe }};
+    tendenciaData = {{ tendencia_periodos | tojson | safe }};
+
+    const colores = [
+        'rgba(56,189,248,0.7)',
+        'rgba(45,212,191,0.7)',
+        'rgba(251,191,36,0.7)',
+        'rgba(167,139,250,0.7)'
+    ];
+
+   // GRÁFICA 1A — Precipitación Anual por período (usa nombre_mes = 'Anual')
+const periodosAnual = ['1961-1990', '1971-2000', '1981-2010', '1991-2020'];
+
+const anualAmazonas = periodosAnual.map(per => {
+    const r = precipData.find(x => x.departamento === 'AMAZONAS' && x.nombre_mes === 'Anual' && x.periodo === per);
+    return r ? r.promedio : null;
+});
+const anualAntioquia = periodosAnual.map(per => {
+    const r = precipData.find(x => x.departamento === 'ANTIOQUIA' && x.nombre_mes === 'Anual' && x.periodo === per);
+    return r ? r.promedio : null;
+});
+
+new Chart(document.getElementById('chart-precip-anual'), {
+    type: 'bar',
+    data: {
+        labels: periodosAnual,
+        datasets: [
+            {
+                label: 'Amazonas',
+                data: anualAmazonas,
+                backgroundColor: 'rgba(56,189,248,0.65)',
+                borderColor: 'rgba(56,189,248,0.95)',
+                borderWidth: 1,
+                borderRadius: 5
+            },
+            {
+                label: 'Antioquia',
+                data: anualAntioquia,
+                backgroundColor: 'rgba(45,212,191,0.65)',
+                borderColor: 'rgba(45,212,191,0.95)',
+                borderWidth: 1,
+                borderRadius: 5
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#94afc8', font: { size: 11 } } },
+            tooltip: { callbacks: { label: c => ` ${c.raw} mm/año` } }
+        },
+        scales: {
+            x: { ticks: { color: '#94afc8', font: { size: 10 } }, grid: { display: false } },
+            y: {
+                title: { display: true, text: 'Precipitación (mm/año)', color: '#5a7a9a', font: { size: 10 } },
+                ticks: { color: '#94afc8' },
+                grid: { color: 'rgba(96,165,250,0.08)' }
+            }
+        }
+    }
+});
+
+// GRÁFICA 1B — Patrón mensual 1991-2020 (excluye 'Anual')
+const mesesOrden = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const mensualAmazonas = mesesOrden.map(mes => {
+    const r = precipData.find(x => x.departamento === 'AMAZONAS' && x.nombre_mes === mes && x.periodo === '1991-2020');
+    return r ? r.promedio : null;
+});
+const mensualAntioquia = mesesOrden.map(mes => {
+    const r = precipData.find(x => x.departamento === 'ANTIOQUIA' && x.nombre_mes === mes && x.periodo === '1991-2020');
+    return r ? r.promedio : null;
+});
+
+new Chart(document.getElementById('chart-precip-mensual'), {
+    type: 'line',
+    data: {
+        labels: mesesOrden.map(m => m.substring(0, 3)),
+        datasets: [
+            {
+                label: 'Amazonas',
+                data: mensualAmazonas,
+                borderColor: 'rgba(56,189,248,0.95)',
+                backgroundColor: 'rgba(56,189,248,0.1)',
+                pointBackgroundColor: 'rgba(56,189,248,0.95)',
+                pointRadius: 4, pointBorderColor: '#fff', pointBorderWidth: 1,
+                tension: 0.4, fill: true
+            },
+            {
+                label: 'Antioquia',
+                data: mensualAntioquia,
+                borderColor: 'rgba(45,212,191,0.95)',
+                backgroundColor: 'rgba(45,212,191,0.1)',
+                pointBackgroundColor: 'rgba(45,212,191,0.95)',
+                pointRadius: 4, pointBorderColor: '#fff', pointBorderWidth: 1,
+                tension: 0.4, fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#94afc8', font: { size: 11 } } },
+            tooltip: { callbacks: { label: c => ` ${c.raw} mm` } }
+        },
+        scales: {
+            x: { ticks: { color: '#94afc8', font: { size: 10 } }, grid: { color: 'rgba(96,165,250,0.08)' } },
+            y: {
+                title: { display: true, text: 'Precipitación (mm)', color: '#5a7a9a', font: { size: 10 } },
+                ticks: { color: '#94afc8' },
+                grid: { color: 'rgba(96,165,250,0.08)' }
+            }
+        }
+    }
+});
+     // GRÁFICA 2 — Amplitud térmica: floating bars (rango mín → máx) ordenado por amplitud
+const amplitudOrdenada = [...amplitudData]
+    .filter(r => r.temp_max !== null && r.temp_min !== null)
+    .sort((a, b) => (b.amplitud_termica) - (a.amplitud_termica));
+
+new Chart(document.getElementById('chart-amplitud'), {
+    type: 'bar',
+    data: {
+        labels: amplitudOrdenada.map(r => r.estacion),
+        datasets: [
+            {
+                label: 'Rango térmico (mín → máx)',
+                data: amplitudOrdenada.map(r => [r.temp_min, r.temp_max]),
+                backgroundColor: 'rgba(56,189,248,0.55)',
+                borderColor: 'rgba(56,189,248,0.9)',
+                borderWidth: 1.5,
+                borderRadius: 3,
+                borderSkipped: false
+            }
+        ]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: (ctx) => {
+                        const r = amplitudOrdenada[ctx.dataIndex];
+                        return [
+                            ` Rango: ${r.temp_min}°C → ${r.temp_max}°C`,
+                            ` Amplitud: ${r.amplitud_termica}°C`,
+                            ` Altitud: ${r.altitud} m`
+                        ];
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                title: { display: true, text: 'Temperatura (°C)', color: '#5a7a9a', font: { size: 11 } },
+                ticks: { color: '#94afc8', font: { size: 10 } },
+                grid: { color: 'rgba(96,165,250,0.08)' }
+            },
+            y: {
+                ticks: { color: '#94afc8', font: { size: 10 } },
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+    // GRÁFICA 3 — Índice combinado: barras agrupadas ordenadas por precipitación
+const indiceOrdenado = [...indiceData]
+    .filter(r => r.precip_promedio !== null)
+    .sort((a, b) => b.precip_promedio - a.precip_promedio);
+
+new Chart(document.getElementById('chart-indice'), {
+    type: 'bar',
+    data: {
+        labels: indiceOrdenado.map(r => r.departamento.length > 12 ? r.departamento.substring(0, 12) + '…' : r.departamento),
+        datasets: [
+            {
+                label: 'Precip. promedio (mm)',
+                data: indiceOrdenado.map(r => r.precip_promedio),
+                backgroundColor: 'rgba(56,189,248,0.65)',
+                borderRadius: 3,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Temp. media (°C)',
+                data: indiceOrdenado.map(r => r.temp_promedio),
+                backgroundColor: 'rgba(251,191,36,0.65)',
+                borderRadius: 3,
+                yAxisID: 'y1'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#94afc8', font: { size: 11 } } },
+            tooltip: {
+                callbacks: {
+                    afterBody: (items) => {
+                        const r = indiceOrdenado[items[0].dataIndex];
+                        return [
+                            `Días de lluvia: ${r.dias_lluvia ?? 'N/A'}`,
+                            `Altitud media: ${r.altitud_media ?? 'N/A'} m`
+                        ];
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: '#94afc8',
+                    font: { size: 9 },
+                    maxRotation: 45
+                },
+                grid: { display: false }
+            },
+            y: {
+                position: 'left',
+                title: { display: true, text: 'Precipitación (mm)', color: '#5a7a9a', font: { size: 10 } },
+                ticks: { color: '#94afc8' },
+                grid: { color: 'rgba(96,165,250,0.08)' }
+            },
+            y1: {
+                position: 'right',
+                title: { display: true, text: 'Temp. (°C)', color: '#5a7a9a', font: { size: 10 } },
+                ticks: { color: '#f59e0b' },
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+    // GRÁFICA 4 — Tendencia: líneas por período
+    const soloPrec = tendenciaData.filter(r => r.parametro === 'PRECIPITACIÓN' && r.nombre_mes !== 'Anual');
+    const periodos = [...new Set(soloPrec.map(r => r.periodo))];
+    const meses    = [...new Set(soloPrec.map(r => r.nombre_mes))];
+
+    new Chart(document.getElementById('chart-tendencia'), {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: periodos.map((per, i) => ({
+                label: per,
+                data: meses.map(mes => {
+                    const r = soloPrec.find(x => x.periodo === per && x.nombre_mes === mes);
+                    return r ? r.valor_promedio : null;
+                }),
+                borderColor: colores[i],
+                backgroundColor: 'transparent',
+                tension: 0.4,
+                pointRadius: 4,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#94afc8', font: { size: 11 } } },
+                tooltip: { callbacks: { label: c => ` ${c.raw} mm` } },
+                title: { display: true, text: 'Precipitación nacional promedio por mes — comparativa entre períodos', color: '#94afc8', font: { size: 12 } }
+            },
+            scales: {
+                x: { ticks: { color: '#94afc8' }, grid: { color: 'rgba(96,165,250,0.08)' } },
+                y: {
+                    title: { display: true, text: 'Precipitación (mm)', color: '#5a7a9a', font: { size: 11 } },
+                    ticks: { color: '#94afc8' },
+                    grid: { color: 'rgba(96,165,250,0.08)' }
+                }
+            }
+        }
+    });
+}
 </script>
 </body>
 </html>
