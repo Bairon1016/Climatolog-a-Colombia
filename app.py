@@ -170,7 +170,7 @@ def index():
         ctx = get_dashboard_context()
     except Exception as e:
         return f"<pre>ERROR en get_dashboard_context:\n{e}</pre>", 500
-    ctx["clustering_data"] = get_clustering_data()
+    ctx["clustering_data"] = {"exito": False, "estatico": True}
     return render_template("index.html", **ctx)
 
 @app.route("/consulta_filtro", methods=["POST"])

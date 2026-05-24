@@ -1621,7 +1621,7 @@
 </div><!-- /multidimensional -->
 
         <!-- ══════════════════════════════════
-             SECCIÓN 4: CONOCIMIENTO PROFUNDO
+             SECCIÓN 4: CONOCIMIENTO OCULTO
              ══════════════════════════════════ -->
 
         <div id="oculto" class="section">
@@ -2236,44 +2236,48 @@
 
         </div><!-- /oculto -->
 
-        <div id="profundo" class="section">
-            {% if clustering_data and clustering_data.exito %}
+        <!-- ══════════════════════════════════
+             SECCIÓN 5: CONOCIMIENTO PROFUNDO 
+             ══════════════════════════════════ -->
+
+        <div id="profundo" class="section active">
+            
                 
                 <!-- STATS ROW -->
                 <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
                     <div class="stat-card">
-                        <div class="stat-value">{{ clustering_data.mejor_k }}</div>
+                        <div class="stat-value">2</div>
                         <div class="stat-label">K Óptimo (K-Means)</div>
                         <div class="stat-desc">Clusters identificados</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" style="color:var(--teal)">{{ "%.4f"|format(clustering_data.mejor_silhouette) }}</div>
+                        <div class="stat-value" style="color:var(--teal)">0.6869</div>
                         <div class="stat-label">Silhouette Score</div>
                         <div class="stat-desc">Calidad del clustering</div>
                     </div>
-                    {% if clustering_data.dbscan %}
+                    
                     <div class="stat-card">
-                        <div class="stat-value" style="color:#a78bfa">{{ clustering_data.dbscan.n_clusters }}</div>
+                        <div class="stat-value" style="color:#a78bfa">3</div>
                         <div class="stat-label">Clusters DBSCAN</div>
-                        <div class="stat-desc">{{ clustering_data.dbscan.n_noise }} puntos ruido</div>
+                        <div class="stat-desc">110 puntos ruido</div>
                     </div>
-                    {% endif %}
-                    {% if clustering_data.anomalias %}
+                    
+                    
                     <div class="stat-card">
-                        <div class="stat-value" style="color:#fb7185">{{ clustering_data.anomalias.isolation_forest.n_anomalias }}</div>
+                        <div class="stat-value" style="color:#fb7185">61</div>
                         <div class="stat-label">Anomalías (IF)</div>
-                        <div class="stat-desc">{{ clustering_data.anomalias.isolation_forest.pct }}% del total</div>
+                        <div class="stat-desc">5.0% del total</div>
                     </div>
-                    {% endif %}
-                    {% if clustering_data.pca %}
+                    
+                    
                     <div class="stat-card">
-                        <div class="stat-value" style="color:#34d399">{{ clustering_data.pca.componentes_80pct }}</div>
+                        <div class="stat-value" style="color:#34d399">3</div>
                         <div class="stat-label">Componentes PCA</div>
                         <div class="stat-desc">Explican ≥80% varianza</div>
                     </div>
-                    {% endif %}
+                    
                     <div class="stat-card">
-                        <div class="stat-value" style="color:var(--gold)">{{ clustering_data.tiempo_procesamiento }}s</div>
+                        <div class="stat-value" style="color:var(--gold)">54.95s</div>
                         <div class="stat-label">Tiempo Total</div>
                         <div class="stat-desc">Pipeline completo Spark</div>
                     </div>
@@ -2285,21 +2289,21 @@
                         <div class="card-title">Conocimiento Profundo — Clustering K-Means con Apache Spark</div>
                     </div>
                     <p class="intro-text">
-                        Esta sección presenta los resultados del análisis de <strong>clustering K-Means con Apache Spark MLlib</strong> sobre las Normales Climatológicas de Colombia. El pipeline procesa <strong style="color:var(--accent3)">{{ clustering_data.num_registros|default(0) }} registros</strong> leídos directamente del archivo Excel del IDEAM, y los agrupa automáticamente según patrones de precipitación, altitud y ubicación geográfica, sin supervisión previa.
+                        Esta sección presenta los resultados del análisis de <strong>clustering K-Means con Apache Spark MLlib</strong> sobre las Normales Climatológicas de Colombia. El pipeline procesa <strong style="color:var(--accent3)">1212 registros</strong> leídos directamente del archivo Excel del IDEAM, y los agrupa automáticamente según patrones de precipitación, altitud y ubicación geográfica, sin supervisión previa.
                     </p>
                     <hr class="divider">
                     <p class="intro-text">
-                        Se entrenaron <strong>7 modelos K-Means</strong> con k=2..8 usando <strong style="color:var(--teal)">{{ clustering_data.motor|default('Apache Spark') }}</strong>. Para cada modelo se calculó el <strong style="color:var(--accent3)">Silhouette Score</strong> (mide cohesión vs separación de clusters, rango -1 a 1) y la <strong style="color:var(--teal)">Inertia / WSSSE</strong> (suma de cuadrados dentro de los clusters). El modelo con mayor Silhouette se considera óptimo.
+                        Se entrenaron <strong>7 modelos K-Means</strong> con k=2..8 usando <strong style="color:var(--teal)">Apache Spark 3.5.1</strong>. Para cada modelo se calculó el <strong style="color:var(--accent3)">Silhouette Score</strong> (mide cohesión vs separación de clusters, rango -1 a 1) y la <strong style="color:var(--teal)">Inertia / WSSSE</strong> (suma de cuadrados dentro de los clusters). El modelo con mayor Silhouette se considera óptimo.
                     </p>
                     <div class="periods-row">
-                        <span class="period-pill">Motor: {{ clustering_data.motor|default('Apache Spark') }}</span>
+                        <span class="period-pill">Motor: Apache Spark 3.5.1</span>
                         <span class="period-pill">Fuente: archivo Excel (IDEAM)</span>
-                        <span class="period-pill">Features: {{ clustering_data.features_usadas|default([])|join(', ') }}</span>
+                        <span class="period-pill">Features: ALTITUD_m, LATITUD, LONGITUD, ANUAL, ENE, FEB, MAR, ABR, MAY, JUN, JUL, AGO, SEP, OCT, NOV, DIC</span>
                     </div>
                 </div>
 
                 <!-- BENCHMARK DE CONFIGURACIONES -->
-                {% if clustering_data.benchmark %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Comparación de Rendimiento — 3 Configuraciones de Spark</div>
@@ -2319,29 +2323,69 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set max_t = clustering_data.benchmark | map(attribute='tiempo_s') | max %}
-                                {% set min_t = clustering_data.benchmark | map(attribute='tiempo_s') | min %}
-                                {% for b in clustering_data.benchmark %}
-                                {% set pct = (b.tiempo_s / max_t * 100) | round(1) %}
-                                {% set es_mejor = (b.tiempo_s == min_t) %}
-                                <tr {% if es_mejor %}style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)"{% endif %}>
-                                    <td class="tech-name" style="font-family:monospace">{{ b.master }}</td>
-                                    <td style="color:var(--text2)">{{ b.descripcion }}</td>
+                                
+                                
+                                
+                                
+                                
+                                <tr>
+                                    <td class="tech-name" style="font-family:monospace">local[1]</td>
+                                    <td style="color:var(--text2)">Solo nodo master (1 hilo)</td>
                                     <td style="text-align:right">
-                                        <span {% if es_mejor %}style="color:var(--accent);font-weight:700"{% endif %}>
-                                            {{ b.tiempo_s }}s
+                                        <span>
+                                            3.65s
                                         </span>
                                     </td>
                                     <td style="text-align:right;color:var(--teal)">
-                                        {{ (max_t / b.tiempo_s) | round(2) }}×
+                                        1.0×
                                     </td>
                                     <td>
                                         <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
-                                            <div style="width:{{ pct }}%;height:100%;background:{% if es_mejor %}var(--accent){% else %}rgba(56,189,248,0.35){% endif %};border-radius:4px"></div>
+                                            <div style="width:100.0%;height:100%;background:rgba(56,189,248,0.35);border-radius:4px"></div>
                                         </div>
                                     </td>
                                 </tr>
-                                {% endfor %}
+                                
+                                
+                                
+                                <tr>
+                                    <td class="tech-name" style="font-family:monospace">local[2]</td>
+                                    <td style="color:var(--text2)">Master + 1 worker</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            2.16s
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right;color:var(--teal)">
+                                        1.69×
+                                    </td>
+                                    <td>
+                                        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                                            <div style="width:59.2%;height:100%;background:rgba(56,189,248,0.35);border-radius:4px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                
+                                
+                                <tr style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)">
+                                    <td class="tech-name" style="font-family:monospace">local[*]</td>
+                                    <td style="color:var(--text2)">Master + todos los workers</td>
+                                    <td style="text-align:right">
+                                        <span style="color:var(--accent);font-weight:700">
+                                            1.68s
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right;color:var(--teal)">
+                                        2.17×
+                                    </td>
+                                    <td>
+                                        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                                            <div style="width:46.0%;height:100%;background:var(--accent);border-radius:4px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -2349,7 +2393,7 @@
                         La configuración resaltada es la más rápida. <strong>local[1]</strong> = 1 hilo (solo master); <strong>local[2]</strong> = 2 hilos (master + 1 worker); <strong>local[*]</strong> = todos los núcleos disponibles del equipo.
                     </p>
                 </div>
-                {% endif %}
+                
 
                 <!-- TABLA DE MÉTRICAS -->
                 <div class="card">
@@ -2366,17 +2410,77 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for metrica in clustering_data.tabla_metricas %}
-                                <tr {% if metrica.k == clustering_data.mejor_k %}style="background:rgba(56,189,248,0.08); border-left:3px solid var(--accent)"{% endif %}>
-                                    <td class="tech-name">{{ metrica.k }}</td>
+                                
+                                <tr style="background:rgba(56,189,248,0.08); border-left:3px solid var(--accent)">
+                                    <td class="tech-name">2</td>
                                     <td style="text-align:right">
-                                        <span {% if metrica.k == clustering_data.mejor_k %}style="color:var(--accent); font-weight:700"{% endif %}>
-                                            {{ metrica.silhouette }}
+                                        <span style="color:var(--accent); font-weight:700">
+                                            0.6869
                                         </span>
                                     </td>
-                                    <td style="text-align:right">{{ metrica.inertia }}</td>
+                                    <td style="text-align:right">11867.3</td>
                                 </tr>
-                                {% endfor %}
+                                
+                                <tr>
+                                    <td class="tech-name">3</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.5863
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">9158.13</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="tech-name">4</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.4212
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">7992.04</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="tech-name">5</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.4638
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">6545.12</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="tech-name">6</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.4881
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">5815.38</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="tech-name">7</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.5294
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">5122.53</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="tech-name">8</td>
+                                    <td style="text-align:right">
+                                        <span>
+                                            0.5412
+                                        </span>
+                                    </td>
+                                    <td style="text-align:right">4705.81</td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -2391,12 +2495,17 @@
                         <div class="card-title">Distribución de Registros por Cluster</div>
                     </div>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:12px;margin-top:14px">
-                        {% for cluster_name, count in clustering_data.cluster_info.items() %}
+                        
                         <div class="ds-item">
-                            <div class="ds-label">{{ cluster_name }}</div>
-                            <div class="ds-value" style="font-size:16px;color:var(--accent3)">{{ count }} registros</div>
+                            <div class="ds-label">Cluster 0</div>
+                            <div class="ds-value" style="font-size:16px;color:var(--accent3)">229 registros</div>
                         </div>
-                        {% endfor %}
+                        
+                        <div class="ds-item">
+                            <div class="ds-label">Cluster 1</div>
+                            <div class="ds-value" style="font-size:16px;color:var(--accent3)">983 registros</div>
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -2415,61 +2524,67 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for stat in clustering_data.cluster_stats %}
+                                
                                 <tr>
-                                    <td class="tech-name">Cluster {{ stat.cluster }}</td>
-                                    <td style="text-align:right">{{ stat.registros }}</td>
-                                    <td style="text-align:right;color:var(--teal)">{{ stat.promedio_mm }}</td>
+                                    <td class="tech-name">Cluster 0</td>
+                                    <td style="text-align:right">229</td>
+                                    <td style="text-align:right;color:var(--teal)">3.05</td>
                                 </tr>
-                                {% endfor %}
+                                
+                                <tr>
+                                    <td class="tech-name">Cluster 1</td>
+                                    <td style="text-align:right">983</td>
+                                    <td style="text-align:right;color:var(--teal)">579.69</td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- CONSULTAS ANALÍTICAS CON SPARK -->
-                {% if clustering_data.analiticas %}
-                {% set an = clustering_data.analiticas %}
+                
+                
 
-                {% if an.indicadores_globales %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Indicadores Globales — Spark SQL</div>
                     </div>
                     <p class="body-text" style="margin-bottom:14px">
-                        Calculados con <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">pyspark.sql.functions</code> sobre el Spark DataFrame completo ({{ an.indicadores_globales.total_registros | default(0) }} registros).
+                        Calculados con <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">pyspark.sql.functions</code> sobre el Spark DataFrame completo (1212 registros).
                     </p>
                     <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:20px">{{ an.indicadores_globales.prom_anual }}</div>
+                            <div class="stat-value" style="font-size:20px">470.74</div>
                             <div class="stat-label">Precip. Promedio</div>
                             <div class="stat-desc">mm/año (media nacional)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:20px;color:var(--teal)">{{ an.indicadores_globales.desv_anual }}</div>
+                            <div class="stat-value" style="font-size:20px;color:var(--teal)">403.58</div>
                             <div class="stat-label">Desviación Estándar</div>
                             <div class="stat-desc">mm/año (variabilidad)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:20px;color:var(--gold)">{{ an.indicadores_globales.min_anual }}</div>
+                            <div class="stat-value" style="font-size:20px;color:var(--gold)">1.0</div>
                             <div class="stat-label">Mínimo</div>
                             <div class="stat-desc">mm/año</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:20px;color:var(--accent3)">{{ an.indicadores_globales.max_anual }}</div>
+                            <div class="stat-value" style="font-size:20px;color:var(--accent3)">999.4</div>
                             <div class="stat-label">Máximo</div>
                             <div class="stat-desc">mm/año</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:20px;color:#a78bfa">{{ an.indicadores_globales.altitud_prom }}</div>
+                            <div class="stat-value" style="font-size:20px;color:#a78bfa">103.98</div>
                             <div class="stat-label">Altitud Promedio</div>
                             <div class="stat-desc">m.s.n.m.</div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
+                
 
-                {% if an.zonas_altitudinales %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Agrupación por Zona Altitudinal — Spark groupBy</div>
@@ -2488,27 +2603,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set max_p = an.zonas_altitudinales | map(attribute='prom_precip') | max %}
-                                {% for z in an.zonas_altitudinales %}
-                                {% set pct = (z.prom_precip / max_p * 100) | round(1) %}
+                                
+                                
+                                
                                 <tr>
-                                    <td class="tech-name">{{ z.zona }}</td>
-                                    <td style="text-align:right;color:var(--text2)">{{ z.registros }}</td>
-                                    <td style="text-align:right;color:var(--teal)">{{ z.prom_precip }}</td>
+                                    <td class="tech-name">Tierras bajas (&lt;500 m)</td>
+                                    <td style="text-align:right;color:var(--text2)">1111</td>
+                                    <td style="text-align:right;color:var(--teal)">476.83</td>
                                     <td>
                                         <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
-                                            <div style="width:{{ pct }}%;height:100%;background:var(--teal);border-radius:4px"></div>
+                                            <div style="width:100.0%;height:100%;background:var(--teal);border-radius:4px"></div>
                                         </div>
                                     </td>
                                 </tr>
-                                {% endfor %}
+                                
+                                
+                                <tr>
+                                    <td class="tech-name">Piso cálido (500-1500 m)</td>
+                                    <td style="text-align:right;color:var(--text2)">101</td>
+                                    <td style="text-align:right;color:var(--teal)">403.68</td>
+                                    <td>
+                                        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+                                            <div style="width:84.7%;height:100%;background:var(--teal);border-radius:4px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
-                {% endif %}
+                
 
-                {% if an.top_departamentos %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Top 10 Departamentos por Precipitación — Spark SQL</div>
@@ -2528,22 +2655,94 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for d in an.top_departamentos %}
+                                
                                 <tr>
-                                    <td style="color:var(--text3)">{{ loop.index }}</td>
-                                    <td class="tech-name">{{ d.departamento }}</td>
-                                    <td style="text-align:right;color:var(--text2)">{{ d.estaciones }}</td>
-                                    <td style="text-align:right;color:var(--accent3)">{{ d.prom_precip }}</td>
-                                    <td style="text-align:right;color:var(--teal)">{{ d.max_precip }}</td>
+                                    <td style="color:var(--text3)">1</td>
+                                    <td class="tech-name">BoyacÃ¡</td>
+                                    <td style="text-align:right;color:var(--text2)">202</td>
+                                    <td style="text-align:right;color:var(--accent3)">736.08</td>
+                                    <td style="text-align:right;color:var(--teal)">997.1</td>
                                 </tr>
-                                {% endfor %}
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">2</td>
+                                    <td class="tech-name">AtlÃ¡ntico</td>
+                                    <td style="text-align:right;color:var(--text2)">26</td>
+                                    <td style="text-align:right;color:var(--accent3)">711.75</td>
+                                    <td style="text-align:right;color:var(--teal)">998.7</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">3</td>
+                                    <td class="tech-name">Cundinamarca</td>
+                                    <td style="text-align:right;color:var(--text2)">263</td>
+                                    <td style="text-align:right;color:var(--accent3)">705.25</td>
+                                    <td style="text-align:right;color:var(--teal)">999.4</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">4</td>
+                                    <td class="tech-name">Norte de Santander</td>
+                                    <td style="text-align:right;color:var(--text2)">52</td>
+                                    <td style="text-align:right;color:var(--accent3)">600.44</td>
+                                    <td style="text-align:right;color:var(--teal)">997.4</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">5</td>
+                                    <td class="tech-name">La Guajira</td>
+                                    <td style="text-align:right;color:var(--text2)">129</td>
+                                    <td style="text-align:right;color:var(--accent3)">508.95</td>
+                                    <td style="text-align:right;color:var(--teal)">996.7</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">6</td>
+                                    <td class="tech-name">NariÃ±o</td>
+                                    <td style="text-align:right;color:var(--text2)">46</td>
+                                    <td style="text-align:right;color:var(--accent3)">456.71</td>
+                                    <td style="text-align:right;color:var(--teal)">996.4</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">7</td>
+                                    <td class="tech-name">Santander</td>
+                                    <td style="text-align:right;color:var(--text2)">62</td>
+                                    <td style="text-align:right;color:var(--accent3)">452.21</td>
+                                    <td style="text-align:right;color:var(--teal)">995.6</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">8</td>
+                                    <td class="tech-name">Magdalena</td>
+                                    <td style="text-align:right;color:var(--text2)">50</td>
+                                    <td style="text-align:right;color:var(--accent3)">432.3</td>
+                                    <td style="text-align:right;color:var(--teal)">997.8</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">9</td>
+                                    <td class="tech-name">BolÃ­var</td>
+                                    <td style="text-align:right;color:var(--text2)">19</td>
+                                    <td style="text-align:right;color:var(--accent3)">374.8</td>
+                                    <td style="text-align:right;color:var(--teal)">970.1</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="color:var(--text3)">10</td>
+                                    <td class="tech-name">Valle del Cauca</td>
+                                    <td style="text-align:right;color:var(--text2)">68</td>
+                                    <td style="text-align:right;color:var(--accent3)">351.36</td>
+                                    <td style="text-align:right;color:var(--teal)">993.3</td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
-                {% endif %}
+                
 
-                {% endif %}{# /analiticas #}
+                
 
                 <!-- METODOLOGÍA -->
                 <div class="card">
@@ -2552,7 +2751,7 @@
                     </div>
                     <div class="section-number">1 · Carga y procesamiento con Apache Spark</div>
                     <p class="body-text">
-                        Los datos se leyeron directamente del archivo <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">{{ clustering_data.archivo_fuente|default('Normales_Climatológicas_de_Colombia.xlsx') }}</code> (Normales Climatológicas del IDEAM). pandas carga el Excel y lo entrega a Spark vía CSV intermedio. Sobre el Spark DataFrame se aplica <strong>VectorAssembler</strong> para construir el vector de features con 4 columnas (<strong>ALTITUD_m</strong>, <strong>LATITUD</strong>, <strong>LONGITUD</strong>, <strong>ANUAL</strong>) y luego <strong>StandardScaler</strong> (withMean=true, withStd=true) para normalizar a media 0 y desviación 1.
+                        Los datos se leyeron directamente del archivo <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">static/data/Normales_Climatológicas_de_Colombia_20260425.xlsx</code> (Normales Climatológicas del IDEAM). pandas carga el Excel y lo entrega a Spark vía CSV intermedio. Sobre el Spark DataFrame se aplica <strong>VectorAssembler</strong> para construir el vector de features con 4 columnas (<strong>ALTITUD_m</strong>, <strong>LATITUD</strong>, <strong>LONGITUD</strong>, <strong>ANUAL</strong>) y luego <strong>StandardScaler</strong> (withMean=true, withStd=true) para normalizar a media 0 y desviación 1.
                     </p>
                     <hr class="divider">
                     <div class="section-number">2 · Entrenamiento de modelos con Spark MLlib</div>
@@ -2575,14 +2774,14 @@
                         <div>
                             <div class="section-number" style="margin-bottom:8px">Silhouette Score por k</div>
                             <div style="height:260px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
-                                <canvas id="chart-silhouette-k"></canvas>
+                                <canvas id="chart-silhouette-k" width="647" height="293" style="display: block; box-sizing: border-box; height: 234.4px; width: 518px;"></canvas>
                             </div>
                             <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">El pico marca el k óptimo (mejor cohesión-separación).</p>
                         </div>
                         <div>
                             <div class="section-number" style="margin-bottom:8px">Curva del codo — Inertia por k</div>
                             <div style="height:260px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
-                                <canvas id="chart-inertia-k"></canvas>
+                                <canvas id="chart-inertia-k" width="647" height="293" style="display: block; box-sizing: border-box; height: 234.4px; width: 518px;"></canvas>
                             </div>
                             <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">Donde la curva "se dobla" se sugiere el k natural.</p>
                         </div>
@@ -2590,22 +2789,22 @@
                     <hr class="divider">
                     <div class="section-number" style="margin-bottom:8px">Distribución de registros y precipitación promedio por cluster</div>
                     <div style="height:300px;background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border)">
-                        <canvas id="chart-cluster-stats"></canvas>
+                        <canvas id="chart-cluster-stats" width="656" height="343" style="display: block; box-sizing: border-box; height: 274.4px; width: 525.2px;"></canvas>
                     </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════
                      ANÁLISIS EXPLORATORIO (EDA)
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.eda and clustering_data.eda.estadisticas %}
-                {% set eda = clustering_data.eda %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Análisis Exploratorio Multivariado (EDA)</div>
                     </div>
                     <p class="body-text" style="margin-bottom:14px">
-                        Estadísticas descriptivas avanzadas sobre las <strong>{{ eda.n_features }}</strong> features de clustering.
-                        Se detectaron <strong style="color:var(--gold)">{{ eda.n_outliers_iqr }}</strong> valores extremos (método IQR).
+                        Estadísticas descriptivas avanzadas sobre las <strong>16</strong> features de clustering.
+                        Se detectaron <strong style="color:var(--gold)">1481</strong> valores extremos (método IQR).
                     </p>
                     <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
                         <table class="tech-table">
@@ -2615,95 +2814,437 @@
                                 <th style="text-align:right">Sesgo</th><th style="text-align:right">Curtosis</th>
                             </tr></thead>
                             <tbody>
-                            {% for stat in eda.estadisticas %}
+                            
                             <tr>
-                                <td class="tech-name">{{ stat.feature }}</td>
-                                <td style="text-align:right">{{ stat.mean }}</td>
-                                <td style="text-align:right">{{ stat.std }}</td>
-                                <td style="text-align:right">{{ stat.min }}</td>
-                                <td style="text-align:right">{{ stat.median }}</td>
-                                <td style="text-align:right">{{ stat.max }}</td>
-                                <td style="text-align:right;color:{% if stat.skewness|abs > 1 %}var(--gold){% else %}var(--text){% endif %}">{{ stat.skewness }}</td>
-                                <td style="text-align:right">{{ stat.kurtosis }}</td>
+                                <td class="tech-name">ALTITUD_m</td>
+                                <td style="text-align:right">103.98</td>
+                                <td style="text-align:right">222.77</td>
+                                <td style="text-align:right">1.0</td>
+                                <td style="text-align:right">2.87</td>
+                                <td style="text-align:right">996.0</td>
+                                <td style="text-align:right;color:var(--gold)">2.61</td>
+                                <td style="text-align:right">6.046</td>
                             </tr>
-                            {% endfor %}
+                            
+                            <tr>
+                                <td class="tech-name">LATITUD</td>
+                                <td style="text-align:right">6.29</td>
+                                <td style="text-align:right">2.95</td>
+                                <td style="text-align:right">-1.75</td>
+                                <td style="text-align:right">5.59</td>
+                                <td style="text-align:right">13.36</td>
+                                <td style="text-align:right;color:var(--text)">0.444</td>
+                                <td style="text-align:right">-0.381</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">LONGITUD</td>
+                                <td style="text-align:right">-74.11</td>
+                                <td style="text-align:right">1.56</td>
+                                <td style="text-align:right">-81.73</td>
+                                <td style="text-align:right">-73.94</td>
+                                <td style="text-align:right">-67.49</td>
+                                <td style="text-align:right;color:var(--text)">-0.229</td>
+                                <td style="text-align:right">1.156</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">ANUAL</td>
+                                <td style="text-align:right">470.74</td>
+                                <td style="text-align:right">403.58</td>
+                                <td style="text-align:right">1.0</td>
+                                <td style="text-align:right">646.05</td>
+                                <td style="text-align:right">999.4</td>
+                                <td style="text-align:right;color:var(--text)">-0.14</td>
+                                <td style="text-align:right">-1.767</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">ENE</td>
+                                <td style="text-align:right">50.11</td>
+                                <td style="text-align:right">66.89</td>
+                                <td style="text-align:right">0.0</td>
+                                <td style="text-align:right">28.4</td>
+                                <td style="text-align:right">770.0</td>
+                                <td style="text-align:right;color:var(--gold)">4.391</td>
+                                <td style="text-align:right">29.886</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">FEB</td>
+                                <td style="text-align:right">59.89</td>
+                                <td style="text-align:right">63.86</td>
+                                <td style="text-align:right">0.0</td>
+                                <td style="text-align:right">42.65</td>
+                                <td style="text-align:right">661.4</td>
+                                <td style="text-align:right;color:var(--gold)">3.358</td>
+                                <td style="text-align:right">19.388</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">MAR</td>
+                                <td style="text-align:right">90.06</td>
+                                <td style="text-align:right">79.82</td>
+                                <td style="text-align:right">0.0</td>
+                                <td style="text-align:right">72.25</td>
+                                <td style="text-align:right">710.8</td>
+                                <td style="text-align:right;color:var(--gold)">2.414</td>
+                                <td style="text-align:right">10.009</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">ABR</td>
+                                <td style="text-align:right">136.81</td>
+                                <td style="text-align:right">103.02</td>
+                                <td style="text-align:right">0.3</td>
+                                <td style="text-align:right">108.0</td>
+                                <td style="text-align:right">845.4</td>
+                                <td style="text-align:right;color:var(--gold)">2.17</td>
+                                <td style="text-align:right">7.382</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">MAY</td>
+                                <td style="text-align:right">153.8</td>
+                                <td style="text-align:right">118.95</td>
+                                <td style="text-align:right">5.1</td>
+                                <td style="text-align:right">111.1</td>
+                                <td style="text-align:right">977.7</td>
+                                <td style="text-align:right;color:var(--gold)">2.577</td>
+                                <td style="text-align:right">9.201</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">JUN</td>
+                                <td style="text-align:right">115.98</td>
+                                <td style="text-align:right">119.97</td>
+                                <td style="text-align:right">0.8</td>
+                                <td style="text-align:right">70.55</td>
+                                <td style="text-align:right">931.7</td>
+                                <td style="text-align:right;color:var(--gold)">2.672</td>
+                                <td style="text-align:right">8.779</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">JUL</td>
+                                <td style="text-align:right">104.22</td>
+                                <td style="text-align:right">119.61</td>
+                                <td style="text-align:right">0.2</td>
+                                <td style="text-align:right">58.45</td>
+                                <td style="text-align:right">991.5</td>
+                                <td style="text-align:right;color:var(--gold)">2.79</td>
+                                <td style="text-align:right">9.636</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">AGO</td>
+                                <td style="text-align:right">107.46</td>
+                                <td style="text-align:right">113.9</td>
+                                <td style="text-align:right">7.6</td>
+                                <td style="text-align:right">62.7</td>
+                                <td style="text-align:right">964.2</td>
+                                <td style="text-align:right;color:var(--gold)">2.774</td>
+                                <td style="text-align:right">10.231</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">SEP</td>
+                                <td style="text-align:right">126.41</td>
+                                <td style="text-align:right">108.13</td>
+                                <td style="text-align:right">15.5</td>
+                                <td style="text-align:right">84.3</td>
+                                <td style="text-align:right">922.5</td>
+                                <td style="text-align:right;color:var(--gold)">2.683</td>
+                                <td style="text-align:right">10.329</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">OCT</td>
+                                <td style="text-align:right">167.8</td>
+                                <td style="text-align:right">106.1</td>
+                                <td style="text-align:right">44.6</td>
+                                <td style="text-align:right">131.55</td>
+                                <td style="text-align:right">926.7</td>
+                                <td style="text-align:right;color:var(--gold)">2.606</td>
+                                <td style="text-align:right">9.765</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">NOV</td>
+                                <td style="text-align:right">138.93</td>
+                                <td style="text-align:right">96.32</td>
+                                <td style="text-align:right">26.7</td>
+                                <td style="text-align:right">105.95</td>
+                                <td style="text-align:right">970.3</td>
+                                <td style="text-align:right;color:var(--gold)">2.973</td>
+                                <td style="text-align:right">13.932</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="tech-name">DIC</td>
+                                <td style="text-align:right">77.74</td>
+                                <td style="text-align:right">81.47</td>
+                                <td style="text-align:right">4.0</td>
+                                <td style="text-align:right">48.4</td>
+                                <td style="text-align:right">901.6</td>
+                                <td style="text-align:right;color:var(--gold)">3.714</td>
+                                <td style="text-align:right">21.107</td>
+                            </tr>
+                            
                             </tbody>
                         </table>
                     </div>
-                    {% if eda.top_correlaciones %}
-                    <div class="section-number">Correlaciones Más Fuertes (|r| > 0.3)</div>
+                    
+                    <div class="section-number">Correlaciones Más Fuertes (|r| &gt; 0.3)</div>
                     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
-                        {% for corr in eda.top_correlaciones %}
+                        
                         <div class="ds-item" style="min-width:180px">
-                            <div class="ds-label">{{ corr.feat1 }} ↔ {{ corr.feat2 }}</div>
-                            <div class="ds-value" style="font-size:15px;color:{% if corr.correlation > 0 %}var(--teal){% else %}var(--gold){% endif %}">
-                                r = {{ corr.correlation }}
+                            <div class="ds-label">JUN ↔ JUL</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.983
                             </div>
                         </div>
-                        {% endfor %}
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">FEB ↔ MAR</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.962
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">ENE ↔ FEB</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.956
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">JUL ↔ AGO</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.956
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">AGO ↔ SEP</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.95
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">ENE ↔ DIC</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.949
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">JUN ↔ AGO</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.948
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">MAY ↔ JUN</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.943
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">SEP ↔ OCT</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.93
+                            </div>
+                        </div>
+                        
+                        <div class="ds-item" style="min-width:180px">
+                            <div class="ds-label">ABR ↔ MAY</div>
+                            <div class="ds-value" style="font-size:15px;color:var(--teal)">
+                                r = 0.924
+                            </div>
+                        </div>
+                        
                     </div>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      PCA — REDUCCIÓN DIMENSIONAL
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.pca %}
-                {% set pca = clustering_data.pca %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">PCA — Reducción de Dimensionalidad</div>
                     </div>
                     <p class="body-text" style="margin-bottom:14px">
-                        El Análisis de Componentes Principales reduce las <strong>{{ clustering_data.features_usadas|length }}</strong> features originales
+                        El Análisis de Componentes Principales reduce las <strong>16</strong> features originales
                         a un espacio de menor dimensión preservando la máxima varianza.
-                        Se necesitan <strong style="color:var(--teal)">{{ pca.componentes_80pct }} componentes</strong>
+                        Se necesitan <strong style="color:var(--teal)">3 componentes</strong>
                         para explicar el ≥80% de la varianza total.
                     </p>
                     <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-bottom:16px">
-                        {% for i in range([pca.varianza_explicada|length, 6]|min) %}
+                        
                         <div class="stat-card">
-                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">{{ "%.1f"|format(pca.varianza_acumulada[i]*100) }}%</div>
-                            <div class="stat-label">PC1..PC{{ i+1 }}</div>
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">62.6%</div>
+                            <div class="stat-label">PC1..PC1</div>
                             <div class="stat-desc">Var. acumulada</div>
                         </div>
-                        {% endfor %}
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">76.9%</div>
+                            <div class="stat-label">PC1..PC2</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">83.1%</div>
+                            <div class="stat-label">PC1..PC3</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">88.5%</div>
+                            <div class="stat-label">PC1..PC4</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">93.0%</div>
+                            <div class="stat-label">PC1..PC5</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" style="font-size:18px;color:var(--accent3)">96.5%</div>
+                            <div class="stat-label">PC1..PC6</div>
+                            <div class="stat-desc">Var. acumulada</div>
+                        </div>
+                        
                     </div>
-                    {% if pca.loadings %}
+                    
                     <div class="section-number" style="margin-bottom:10px">Variables Más Importantes por Componente</div>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
-                        {% for comp in pca.loadings %}
+                        
                         <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
                             <div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:8px">
-                                {{ comp.PC }} <span style="color:var(--text3);font-weight:400">({{ comp.varianza_pct }}% varianza)</span>
+                                PC1 <span style="color:var(--text3);font-weight:400">(62.6% varianza)</span>
                             </div>
-                            {% for f in comp.top_features %}
+                            
                             <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
-                                <span>{{ f.feature }}</span>
-                                <span style="color:{% if f.loading > 0 %}var(--teal){% else %}var(--gold){% endif %}">{{ f.loading }}</span>
+                                <span>ABR</span>
+                                <span style="color:var(--teal)">0.299</span>
                             </div>
-                            {% endfor %}
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>MAY</span>
+                                <span style="color:var(--teal)">0.298</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>NOV</span>
+                                <span style="color:var(--teal)">0.292</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>OCT</span>
+                                <span style="color:var(--teal)">0.282</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>DIC</span>
+                                <span style="color:var(--teal)">0.28</span>
+                            </div>
+                            
                         </div>
-                        {% endfor %}
+                        
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:8px">
+                                PC2 <span style="color:var(--text3);font-weight:400">(14.3% varianza)</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>LATITUD</span>
+                                <span style="color:var(--teal)">0.484</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>LONGITUD</span>
+                                <span style="color:var(--teal)">0.365</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>AGO</span>
+                                <span style="color:var(--teal)">0.304</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>FEB</span>
+                                <span style="color:var(--gold)">-0.284</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>ENE</span>
+                                <span style="color:var(--gold)">-0.282</span>
+                            </div>
+                            
+                        </div>
+                        
+                        <div style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border)">
+                            <div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:8px">
+                                PC3 <span style="color:var(--text3);font-weight:400">(6.2% varianza)</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>ALTITUD_m</span>
+                                <span style="color:var(--teal)">0.924</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>ANUAL</span>
+                                <span style="color:var(--gold)">-0.263</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>LATITUD</span>
+                                <span style="color:var(--teal)">0.164</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>ENE</span>
+                                <span style="color:var(--gold)">-0.097</span>
+                            </div>
+                            
+                            <div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:var(--text2)">
+                                <span>OCT</span>
+                                <span style="color:var(--teal)">0.088</span>
+                            </div>
+                            
+                        </div>
+                        
                     </div>
-                    {% endif %}
-                    {% if clustering_data.graficos.pca %}
+                    
+                    
                     <hr class="divider">
                     <div class="section-number" style="margin-bottom:8px">Visualización PCA</div>
                     <img src="/static/img/spark_pca.png" alt="PCA Scatter" style="width:100%;border-radius:10px;border:1px solid var(--border)">
                     <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
                         Izquierda: scree plot con varianza acumulada. Derecha: clusters proyectados en PC1-PC2.
                     </p>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      DBSCAN — CLUSTERING POR DENSIDAD
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.dbscan %}
-                {% set db = clustering_data.dbscan %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">DBSCAN — Clustering Basado en Densidad</div>
@@ -2715,49 +3256,61 @@
                     </p>
                     <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:14px">
                         <div class="stat-card">
-                            <div class="stat-value" style="color:#a78bfa">{{ db.n_clusters }}</div>
+                            <div class="stat-value" style="color:#a78bfa">3</div>
                             <div class="stat-label">Clusters</div>
                             <div class="stat-desc">Detectados automáticamente</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:#fb7185">{{ db.n_noise }}</div>
+                            <div class="stat-value" style="color:#fb7185">110</div>
                             <div class="stat-label">Puntos Ruido</div>
-                            <div class="stat-desc">{{ db.pct_noise }}% del dataset</div>
+                            <div class="stat-desc">9.1% del dataset</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--teal)">{{ db.silhouette }}</div>
+                            <div class="stat-value" style="color:var(--teal)">0.377</div>
                             <div class="stat-label">Silhouette</div>
                             <div class="stat-desc">Calidad (excl. ruido)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--accent3)">{{ db.eps }}</div>
+                            <div class="stat-value" style="color:var(--accent3)">1.7415</div>
                             <div class="stat-label">eps</div>
-                            <div class="stat-desc">minPts = {{ db.min_samples }}</div>
+                            <div class="stat-desc">minPts = 7</div>
                         </div>
                     </div>
-                    {% if db.cluster_counts %}
+                    
                     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-                        {% for name, count in db.cluster_counts.items() %}
-                        <div class="period-pill" style="{% if 'Ruido' in name %}background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fb7185{% endif %}">
-                            {{ name }}: {{ count }}
+                        
+                        <div class="period-pill" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fb7185">
+                            Ruido (-1): 110
                         </div>
-                        {% endfor %}
+                        
+                        <div class="period-pill" style="">
+                            Cluster 0: 342
+                        </div>
+                        
+                        <div class="period-pill" style="">
+                            Cluster 1: 737
+                        </div>
+                        
+                        <div class="period-pill" style="">
+                            Cluster 2: 23
+                        </div>
+                        
                     </div>
-                    {% endif %}
-                    {% if clustering_data.graficos.dbscan %}
+                    
+                    
                     <img src="/static/img/spark_dbscan.png" alt="DBSCAN" style="width:100%;border-radius:10px;border:1px solid var(--border)">
                     <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
                         Clusters proyectados en espacio PCA. Puntos rojos (×) = ruido detectado automáticamente.
                     </p>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      CLUSTERING JERÁRQUICO + DENDROGRAMA
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.jerarquico %}
-                {% set hier = clustering_data.jerarquico %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Clustering Jerárquico — Ward Linkage</div>
@@ -2765,135 +3318,209 @@
                     <p class="body-text" style="margin-bottom:14px">
                         El clustering aglomerativo construye un árbol jerárquico (dendrograma) fusionando progresivamente los clusters más cercanos.
                         Linkage <strong>Ward</strong> minimiza la varianza intra-cluster en cada fusión.
-                        El dendrograma se generó sobre una muestra de <strong>{{ hier.n_muestra }}</strong> estaciones.
+                        El dendrograma se generó sobre una muestra de <strong>300</strong> estaciones.
                     </p>
                     <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:14px">
                         <div class="stat-card">
-                            <div class="stat-value" style="color:#a78bfa">{{ hier.n_clusters }}</div>
+                            <div class="stat-value" style="color:#a78bfa">2</div>
                             <div class="stat-label">Clusters</div>
                             <div class="stat-desc">Linkage Ward</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--teal)">{{ hier.silhouette }}</div>
+                            <div class="stat-value" style="color:var(--teal)">0.6019</div>
                             <div class="stat-label">Silhouette</div>
                             <div class="stat-desc">Dataset completo</div>
                         </div>
                     </div>
-                    {% if hier.cluster_counts %}
+                    
                     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-                        {% for name, count in hier.cluster_counts.items() %}
-                        <div class="period-pill">{{ name }}: {{ count }} estaciones</div>
-                        {% endfor %}
+                        
+                        <div class="period-pill">Cluster 0: 1135 estaciones</div>
+                        
+                        <div class="period-pill">Cluster 1: 77 estaciones</div>
+                        
                     </div>
-                    {% endif %}
-                    {% if clustering_data.graficos.dendrograma %}
+                    
+                    
                     <img src="/static/img/spark_dendrograma.png" alt="Dendrograma" style="width:100%;border-radius:10px;border:1px solid var(--border)">
                     <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
-                        La línea amarilla marca el corte para k={{ hier.n_clusters }} clusters. Cada hoja representa una estación o grupo de estaciones.
+                        La línea amarilla marca el corte para k=2 clusters. Cada hoja representa una estación o grupo de estaciones.
                     </p>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      DETECCIÓN DE ANOMALÍAS
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.anomalias %}
-                {% set anom = clustering_data.anomalias %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Detección de Anomalías — Isolation Forest + LOF</div>
                     </div>
                     <p class="body-text" style="margin-bottom:14px">
                         Se aplicaron dos métodos complementarios para identificar estaciones con comportamiento climático inusual.
-                        <strong style="color:#fb7185">{{ anom.detectadas_por_ambos }}</strong> estaciones fueron marcadas como anómalas por <em>ambos</em> métodos ({{ anom.pct_ambos }}%), lo que aumenta la confianza en el hallazgo.
+                        <strong style="color:#fb7185">15</strong> estaciones fueron marcadas como anómalas por <em>ambos</em> métodos (1.2%), lo que aumenta la confianza en el hallazgo.
                     </p>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
                         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
                             <div style="font-weight:600;color:var(--accent);margin-bottom:8px">Isolation Forest</div>
-                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">{{ anom.isolation_forest.n_anomalias }}</div>
-                            <div style="color:var(--text2);font-size:12px">anomalías detectadas ({{ anom.isolation_forest.pct }}%)</div>
-                            <div style="color:var(--text3);font-size:11px;margin-top:6px">Contamination: {{ anom.isolation_forest.contamination }}</div>
+                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">61</div>
+                            <div style="color:var(--text2);font-size:12px">anomalías detectadas (5.0%)</div>
+                            <div style="color:var(--text3);font-size:11px;margin-top:6px">Contamination: 0.05</div>
                             <div style="color:var(--text3);font-size:11px">Aísla puntos anómalos con árboles aleatorios</div>
                         </div>
                         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
                             <div style="font-weight:600;color:var(--teal);margin-bottom:8px">Local Outlier Factor (LOF)</div>
-                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">{{ anom.lof.n_anomalias }}</div>
-                            <div style="color:var(--text2);font-size:12px">anomalías detectadas ({{ anom.lof.pct }}%)</div>
-                            <div style="color:var(--text3);font-size:11px;margin-top:6px">k-vecinos: {{ anom.lof.n_neighbors }}</div>
+                            <div style="font-size:28px;font-weight:700;color:#fb7185;margin-bottom:4px">61</div>
+                            <div style="color:var(--text2);font-size:12px">anomalías detectadas (5.0%)</div>
+                            <div style="color:var(--text3);font-size:11px;margin-top:6px">k-vecinos: 20</div>
                             <div style="color:var(--text3);font-size:11px">Densidad local vs. vecindario</div>
                         </div>
                     </div>
-                    {% if clustering_data.graficos.anomalias %}
+                    
                     <img src="/static/img/spark_anomalias.png" alt="Anomalías" style="width:100%;border-radius:10px;border:1px solid var(--border)">
                     <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
                         Histogramas de scores. Rojo = anomalías detectadas. IF usa score negativo (más negativo = más anómalo). LOF usa Negative Outlier Factor.
                     </p>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      MODELO PREDICTIVO — RANDOM FOREST
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.random_forest %}
-                {% set rf = clustering_data.random_forest %}
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Modelo Predictivo — Random Forest</div>
                     </div>
                     <p class="body-text" style="margin-bottom:14px">
-                        Se entrenó un Random Forest ({{ rf.n_estimators }} árboles) para predecir la pertenencia a clusters K-Means a partir de las features originales.
+                        Se entrenó un Random Forest (100 árboles) para predecir la pertenencia a clusters K-Means a partir de las features originales.
                         Esto valida que los clusters son <em>estadísticamente distinguibles</em> y revela qué variables los definen.
                         El entrenamiento excluye las anomalías detectadas por Isolation Forest para mayor robustez.
                     </p>
                     <div class="hero-grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:14px">
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--teal)">{{ "%.2f"|format(rf.accuracy*100) }}%</div>
+                            <div class="stat-value" style="color:var(--teal)">100.00%</div>
                             <div class="stat-label">Accuracy</div>
                             <div class="stat-desc">Clasificación correcta</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--accent3)">{{ "%.4f"|format(rf.f1_score) }}</div>
+                            <div class="stat-value" style="color:var(--accent3)">1.0000</div>
                             <div class="stat-label">F1-Score Macro</div>
                             <div class="stat-desc">Balance precision/recall</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:var(--gold)">{{ "%.4f"|format(rf.cv_mean) }}</div>
+                            <div class="stat-value" style="color:var(--gold)">0.9775</div>
                             <div class="stat-label">CV F1 (5-fold)</div>
-                            <div class="stat-desc">±{{ "%.4f"|format(rf.cv_std) }}</div>
+                            <div class="stat-desc">±0.0051</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" style="color:#a78bfa">{{ rf.top_feature }}</div>
+                            <div class="stat-value" style="color:#a78bfa">ABR</div>
                             <div class="stat-label">Feature Principal</div>
                             <div class="stat-desc">Mayor importancia Gini</div>
                         </div>
                     </div>
-                    {% if rf.feature_importance %}
+                    
                     <div class="section-number" style="margin-bottom:8px">Importancia de Features (Gini)</div>
                     <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
-                        {% set max_imp = rf.feature_importance[0].importance %}
-                        {% for fi in rf.feature_importance[:10] %}
+                        
+                        
                         <div style="display:flex;align-items:center;gap:10px">
-                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">{{ fi.feature }}</div>
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">ABR</div>
                             <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
-                                <div style="width:{{ (fi.importance/max_imp*100)|round(1) }}%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                                <div style="width:100.0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
                             </div>
-                            <div style="width:50px;font-size:11px;color:var(--accent3)">{{ fi.importance }}</div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.2667</div>
                         </div>
-                        {% endfor %}
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">MAY</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:62.5%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.1667</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">OCT</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:46.8%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.1249</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">JUN</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:41.0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.1093</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">ANUAL</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:27.2%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.0725</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">NOV</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:22.2%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.0591</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">AGO</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:15.9%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.0423</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">SEP</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:13.9%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.037</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">JUL</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:9.8%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.0262</div>
+                        </div>
+                        
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div style="width:80px;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0">MAR</div>
+                            <div style="flex:1;background:var(--bg3);border-radius:4px;height:16px;position:relative">
+                                <div style="width:9.7%;height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;opacity:0.8"></div>
+                            </div>
+                            <div style="width:50px;font-size:11px;color:var(--accent3)">0.026</div>
+                        </div>
+                        
                     </div>
-                    {% endif %}
-                    {% if clustering_data.graficos.feature_importance %}
+                    
+                    
                     <img src="/static/img/spark_rf_importance.png" alt="Feature Importance" style="width:100%;border-radius:10px;border:1px solid var(--border)">
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      PERFILES DE CLUSTERS
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.perfiles %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Perfiles Detallados por Cluster</div>
@@ -2902,40 +3529,57 @@
                         Caracterización de cada cluster K-Means con estadísticas descriptivas y etiqueta climática interpretativa.
                     </p>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px">
-                        {% set cluster_colors = ['var(--accent)', 'var(--teal)', 'var(--gold)', '#a78bfa', '#fb7185', '#34d399'] %}
-                        {% for p in clustering_data.perfiles %}
-                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid {{ cluster_colors[loop.index0 % 6] }}">
-                            <div style="font-weight:700;color:{{ cluster_colors[loop.index0 % 6] }};font-size:14px;margin-bottom:6px">
-                                Cluster {{ p.cluster }}
+                        
+                        
+                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--accent)">
+                            <div style="font-weight:700;color:var(--accent);font-size:14px;margin-bottom:6px">
+                                Cluster 0
                             </div>
-                            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">{{ p.descripcion }}</div>
-                            <div style="font-size:12px;color:var(--text3);margin-bottom:4px">{{ p.registros }} estaciones</div>
-                            {% if p.mean_ANUAL is defined %}
-                            <div style="font-size:12px;color:var(--text2)">Precip. anual: <strong>{{ p.mean_ANUAL }} mm</strong></div>
-                            {% endif %}
-                            {% if p.mean_ALTITUD_m is defined %}
-                            <div style="font-size:12px;color:var(--text2)">Altitud media: <strong>{{ p.mean_ALTITUD_m }} m</strong></div>
-                            {% endif %}
-                            {% if p.n_anomalias > 0 %}
-                            <div style="font-size:11px;color:#fb7185;margin-top:6px">⚠ {{ p.n_anomalias }} anomalías en este cluster</div>
-                            {% endif %}
+                            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Tierra baja — régimen seco</div>
+                            <div style="font-size:12px;color:var(--text3);margin-bottom:4px">229 estaciones</div>
+                            
+                            <div style="font-size:12px;color:var(--text2)">Precip. anual: <strong>3.05 mm</strong></div>
+                            
+                            
+                            <div style="font-size:12px;color:var(--text2)">Altitud media: <strong>136.82 m</strong></div>
+                            
+                            
+                            <div style="font-size:11px;color:#fb7185;margin-top:6px">⚠ 60 anomalías en este cluster</div>
+                            
                         </div>
-                        {% endfor %}
+                        
+                        <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--teal)">
+                            <div style="font-weight:700;color:var(--teal);font-size:14px;margin-bottom:6px">
+                                Cluster 1
+                            </div>
+                            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Tierra baja — régimen seco</div>
+                            <div style="font-size:12px;color:var(--text3);margin-bottom:4px">983 estaciones</div>
+                            
+                            <div style="font-size:12px;color:var(--text2)">Precip. anual: <strong>579.69 mm</strong></div>
+                            
+                            
+                            <div style="font-size:12px;color:var(--text2)">Altitud media: <strong>96.33 m</strong></div>
+                            
+                            
+                            <div style="font-size:11px;color:#fb7185;margin-top:6px">⚠ 1 anomalías en este cluster</div>
+                            
+                        </div>
+                        
                     </div>
-                    {% if clustering_data.graficos.cluster_profiles %}
+                    
                     <hr class="divider">
                     <img src="/static/img/spark_perfiles.png" alt="Perfiles Clusters" style="width:100%;border-radius:10px;border:1px solid var(--border)">
                     <p style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">
                         Boxplot comparativo por feature. Cada columna muestra la distribución de valores dentro de cada cluster.
                     </p>
-                    {% endif %}
+                    
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      COMPARATIVA DE MÉTODOS DE CLUSTERING
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.comparativa_clustering %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Comparativa de Métodos de Clustering</div>
@@ -2953,29 +3597,53 @@
                                 <th>Ventaja Principal</th>
                             </tr></thead>
                             <tbody>
-                            {% for m in clustering_data.comparativa_clustering %}
-                            {% set best_sil = clustering_data.comparativa_clustering | map(attribute='silhouette') | max %}
-                            <tr {% if m.silhouette == best_sil %}style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)"{% endif %}>
-                                <td class="tech-name">{{ m.metodo }}</td>
-                                <td><span class="tech-badge">{{ m.tipo }}</span></td>
-                                <td style="text-align:right;font-weight:600">{{ m.clusters }}</td>
-                                <td style="text-align:right;color:{% if m.silhouette == best_sil %}var(--accent){% else %}var(--text){% endif %};font-weight:{% if m.silhouette == best_sil %}700{% else %}400{% endif %}">
-                                    {{ "%.4f"|format(m.silhouette) }}
-                                    {% if m.silhouette == best_sil %} ★{% endif %}
+                            
+                            
+                            <tr style="background:rgba(56,189,248,0.06);border-left:3px solid var(--accent)">
+                                <td class="tech-name">K-Means (Spark MLlib)</td>
+                                <td><span class="tech-badge">Centroide</span></td>
+                                <td style="text-align:right;font-weight:600">2</td>
+                                <td style="text-align:right;color:var(--accent);font-weight:700">
+                                    0.6869
+                                     ★
                                 </td>
-                                <td style="color:var(--text2);font-size:12px">{{ m.ventaja }}</td>
+                                <td style="color:var(--text2);font-size:12px">Escalable, reproducible, distribuido</td>
                             </tr>
-                            {% endfor %}
+                            
+                            
+                            <tr>
+                                <td class="tech-name">DBSCAN</td>
+                                <td><span class="tech-badge">Densidad</span></td>
+                                <td style="text-align:right;font-weight:600">3</td>
+                                <td style="text-align:right;color:var(--text);font-weight:400">
+                                    0.3770
+                                    
+                                </td>
+                                <td style="color:var(--text2);font-size:12px">Forma arbitraria, detecta ruido (110 pts)</td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <td class="tech-name">Jerárquico (Ward)</td>
+                                <td><span class="tech-badge">Jerárquico</span></td>
+                                <td style="text-align:right;font-weight:600">2</td>
+                                <td style="text-align:right;color:var(--text);font-weight:400">
+                                    0.6019
+                                    
+                                </td>
+                                <td style="color:var(--text2);font-size:12px">Dendrograma interpretable, sin k previo</td>
+                            </tr>
+                            
                             </tbody>
                         </table>
                     </div>
                 </div>
-                {% endif %}
+                
 
                 <!-- ═══════════════════════════════════════════════════════
                      CURVA ELBOW + SILHOUETTE (imagen matplotlib)
                 ═══════════════════════════════════════════════════════ -->
-                {% if clustering_data.graficos.elbow %}
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Curva del Codo y Silhouette — Análisis Visual</div>
@@ -2985,14 +3653,14 @@
                         Izquierda: la inercia decrece con k; el codo indica el k natural. Derecha: el pico de Silhouette marca el k óptimo.
                     </p>
                 </div>
-                {% endif %}
+                
 
                 <script type="application/json" id="profundo-data">
                     {
-                        "tabla_metricas": {{ clustering_data.tabla_metricas | tojson }},
-                        "cluster_stats":  {{ clustering_data.cluster_stats  | tojson }},
-                        "mejor_k":        {{ clustering_data.mejor_k        | tojson }},
-                        "benchmark":      {{ clustering_data.benchmark      | default([]) | tojson }}
+                        "tabla_metricas": [{"inertia": 11867.3, "k": 2, "silhouette": 0.6869}, {"inertia": 9158.13, "k": 3, "silhouette": 0.5863}, {"inertia": 7992.04, "k": 4, "silhouette": 0.4212}, {"inertia": 6545.12, "k": 5, "silhouette": 0.4638}, {"inertia": 5815.38, "k": 6, "silhouette": 0.4881}, {"inertia": 5122.53, "k": 7, "silhouette": 0.5294}, {"inertia": 4705.81, "k": 8, "silhouette": 0.5412}],
+                        "cluster_stats":  [{"altitud_prom": 136.82, "cluster": 0, "max_mm": 10.49, "min_mm": 1.78, "promedio_mm": 3.05, "registros": 229}, {"altitud_prom": 96.33, "cluster": 1, "max_mm": 999.4, "min_mm": 1.0, "promedio_mm": 579.69, "registros": 983}],
+                        "mejor_k":        2,
+                        "benchmark":      [{"descripcion": "Solo nodo master (1 hilo)", "master": "local[1]", "tiempo_s": 3.65}, {"descripcion": "Master + 1 worker", "master": "local[2]", "tiempo_s": 2.16}, {"descripcion": "Master + todos los workers", "master": "local[*]", "tiempo_s": 1.68}]
                     }
                 </script>
 
@@ -3010,9 +3678,9 @@
                             <div class="obj-num">01</div>
                             <div class="obj-text">
                                 <strong style="color:var(--accent)">Estructura natural del dataset:</strong>
-                                K-Means identificó <strong>{{ clustering_data.mejor_k }} clusters</strong> óptimos (Silhouette={{ "%.4f"|format(clustering_data.mejor_silhouette) }}).
+                                K-Means identificó <strong>2 clusters</strong> óptimos (Silhouette=0.6869).
                                 El clustering jerárquico y DBSCAN
-                                {% if clustering_data.jerarquico %}(Silhouette={{ clustering_data.jerarquico.silhouette }}){% endif %}
+                                (Silhouette=0.6019)
                                 confirman esta estructura, validando que los grupos son estadísticamente robustos.
                             </div>
                         </div>
@@ -3021,8 +3689,8 @@
                             <div class="obj-text">
                                 <strong style="color:var(--teal)">Variables definidoras de clusters:</strong>
                                 El Random Forest
-                                {% if clustering_data.random_forest %}(Accuracy={{ "%.1f"|format(clustering_data.random_forest.accuracy*100) }}%, CV-F1={{ clustering_data.random_forest.cv_mean }}){% endif %}
-                                revela que <strong>{{ clustering_data.random_forest.top_feature if clustering_data.random_forest else 'ALTITUD_m' }}</strong>
+                                (Accuracy=100.0%, CV-F1=0.9775)
+                                revela que <strong>ABR</strong>
                                 es la variable con mayor poder discriminante entre clusters climáticos.
                             </div>
                         </div>
@@ -3030,40 +3698,40 @@
                             <div class="obj-num">03</div>
                             <div class="obj-text">
                                 <strong style="color:var(--gold)">Anomalías climáticas:</strong>
-                                {% if clustering_data.anomalias %}
-                                Se identificaron <strong>{{ clustering_data.anomalias.detectadas_por_ambos }}</strong> estaciones anómalas confirmadas por Isolation Forest y LOF simultáneamente.
+                                
+                                Se identificaron <strong>15</strong> estaciones anómalas confirmadas por Isolation Forest y LOF simultáneamente.
                                 Estas representan estaciones con comportamiento climático atípico que merecen revisión individual.
-                                {% endif %}
+                                
                             </div>
                         </div>
                         <div class="obj-item">
                             <div class="obj-num">04</div>
                             <div class="obj-text">
                                 <strong style="color:#a78bfa">Dimensionalidad intrínseca:</strong>
-                                {% if clustering_data.pca %}
-                                PCA revela que <strong>{{ clustering_data.pca.componentes_80pct }} componentes principales</strong>
-                                capturan ≥80% de la varianza de {{ clustering_data.features_usadas|length }} variables.
+                                
+                                PCA revela que <strong>3 componentes principales</strong>
+                                capturan ≥80% de la varianza de 16 variables.
                                 Esto indica que la variabilidad climática de Colombia, aunque medida en múltiples variables, responde a pocos factores subyacentes (altitud, régimen estacional).
-                                {% endif %}
+                                
                             </div>
                         </div>
                         <div class="obj-item">
                             <div class="obj-num">05</div>
                             <div class="obj-text">
                                 <strong style="color:#fb7185">Clusters DBSCAN vs K-Means:</strong>
-                                {% if clustering_data.dbscan %}
-                                DBSCAN detectó <strong>{{ clustering_data.dbscan.n_noise }}</strong> estaciones como ruido ({{ clustering_data.dbscan.pct_noise }}%),
+                                
+                                DBSCAN detectó <strong>110</strong> estaciones como ruido (9.1%),
                                 estaciones que no pertenecen a ningún régimen climático bien definido.
                                 Su detección es imposible con K-Means clásico, siendo una ventaja clave del análisis basado en densidad.
-                                {% endif %}
+                                
                             </div>
                         </div>
                         <div class="obj-item">
                             <div class="obj-num">06</div>
                             <div class="obj-text">
                                 <strong style="color:var(--accent3)">Procesamiento distribuido:</strong>
-                                {{ clustering_data.motor|default('Apache Spark') }} procesó <strong>{{ clustering_data.num_registros|default(0) }}</strong>
-                                registros en <strong>{{ clustering_data.tiempo_procesamiento }}s</strong>.
+                                Apache Spark 3.5.1 procesó <strong>1212</strong>
+                                registros en <strong>54.95s</strong>.
                                 El benchmark mostró la ventaja del paralelismo con múltiples workers (local[*]).
                                 Este pipeline es escalable a millones de registros sin cambiar el código.
                             </div>
@@ -3089,23 +3757,7 @@
                             <div style="color:var(--text2);font-size:12px">El pipeline Spark puede ejecutarse periódicamente para detectar cambios en la estructura de clusters, señal de cambio climático.</div>
                         </div>
                     </div>
-                </div>
-
-            {% else %}
-                <div class="card">
-                    <div class="empty-state">
-                        <div class="empty-icon">⚠️</div>
-                        <div class="empty-title">Error en Clustering</div>
-                        <div class="empty-msg">
-                            {% if clustering_data %}
-                                {{ clustering_data.get('error', 'Error desconocido') }}
-                            {% else %}
-                                No se pudo completar el análisis de clustering. Verifica la consola para más detalles.
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+                </div>    
         </div>
 
         <!-- ════════════════════════════════════════
