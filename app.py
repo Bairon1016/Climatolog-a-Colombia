@@ -180,14 +180,14 @@ def consulta_filtro():
     departamento = data.get("departamento", "")
     periodo = data.get("periodo", "")
 
-    conditions = ["p.parametro = %$"]
+    conditions = ["p.parametro = %s"]
     params = [parametro]
 
     if departamento:
-        conditions.append("g.departamento = %$")
+        conditions.append("g.departamento = %s")
         params.append(departamento)
     if periodo:
-        conditions.append("per.periodo = %$")
+        conditions.append("per.periodo = %s")
         params.append(periodo)
 
     # Siempre cruza: Geografia x Tiempo x Periodo x Parametro
